@@ -153,10 +153,8 @@
 // }
 
 // export default SexRatio;
-
 import React, { useEffect, useState } from "react";
 import { Cell, Legend, Pie, PieChart } from "recharts";
-import initialData from "../constant/InitialData";
 import Dropdown from "@/components/Dropdown";
 
 const COLORS = ["#ED2F51", "#2F80ED"];
@@ -171,8 +169,7 @@ const CustomLegend = ({ payload }) => {
             display: "flex",
             alignItems: "center",
             gap: 10,
-          }}
-        >
+          }}>
           <div
             style={{
               backgroundColor: COLORS[index % COLORS.length],
@@ -188,23 +185,27 @@ const CustomLegend = ({ payload }) => {
   );
 };
 
-function SexRatio() {
+function SexRatio({ data }) {
   const [pieData, setPieData] = useState([]);
   const [pieChartDays, setPieChartDays] = useState(7);
 
   useEffect(() => {
     const now = new Date();
-    const filteredData = initialData.filter((d) => {
-      const date = new Date(d.date);
+    const filteredData = data.filter((d) => {
+      const date = new Date(d.createdAt);
       return (now - date) / (24 * 60 * 60 * 1000) <= pieChartDays;
     });
     setPieData(filteredData);
-  }, [pieChartDays]);
+  }, [data, pieChartDays]);
 
   const aggregateData = (data) => {
     const counts = data.reduce(
       (acc, item) => {
-        acc[item.sex]++;
+        if (item.gender === "Male") {
+          acc.Male += 1;
+        } else if (item.gender === "Female") {
+          acc.Female += 1;
+        }
         return acc;
       },
       { Male: 0, Female: 0 }
@@ -245,8 +246,7 @@ function SexRatio() {
         y={y}
         fill="white"
         textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-      >
+        dominantBaseline="central">
         {`${percent.toFixed(0)}%`}
       </text>
     );
@@ -255,15 +255,17 @@ function SexRatio() {
   const chartData = aggregateData(pieData);
 
   const options1 = [
-    { label: "Today", value: "0" },
-    { label: "Yesterday", value: "1" },
+    { label: "Today", value: "1" },
+    { label: "Yesterday", value: "2" },
     { label: "Last 7 days", value: "7" },
     { label: "Last 28 days", value: "28" },
     { label: "Last 90 days", value: "90" },
   ];
 
   const handleDayChange = (option) => {
+    // console.log("Selected option:", option);
     setPieChartDays(parseInt(option.value));
+    // console.log("pieChartDays:", pieChartDays); // This might show the old value due to async state update
   };
 
   return (
@@ -281,8 +283,7 @@ function SexRatio() {
               dataKey="value"
               className="outline-none"
               labelLine={false}
-              label={renderCustomizedLabel}
-            >
+              label={renderCustomizedLabel}>
               {chartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import initialData from "../constant/InitialData";
 import Dropdown from "@/components/Dropdown";
 
 const COLORS = ["#9B51E0", "#2F80ED", "#219653", "#F2994A", "#CCCCCC"]; // Custom colors for countries and others
 
 const aggregateDataByCountry = (data) => {
   const counts = data.reduce((acc, item) => {
-    acc[item.country] = acc[item.country] ? acc[item.country] + 1 : 1;
+    if (item.country && item.country !== "Unknown") {
+      acc[item.country] = acc[item.country] ? acc[item.country] + 1 : 1;
+    }
     return acc;
   }, {});
 
@@ -20,20 +21,20 @@ const aggregateDataByCountry = (data) => {
   }));
 };
 
-function CountryRatio() {
+function CountryRatio({ data }) {
   const [days, setDays] = useState(7);
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     const today = new Date();
-    const data = initialData.filter((item) => {
-      const itemDate = new Date(item.date);
+    const filtered = data.filter((item) => {
+      const itemDate = new Date(item.createdAt);
       const differenceInTime = today - itemDate;
       const differenceInDays = differenceInTime / (1000 * 3600 * 24);
       return differenceInDays < days;
     });
-    setFilteredData(data);
-  }, [days]);
+    setFilteredData(filtered);
+  }, [days, data]);
 
   let chartData = aggregateDataByCountry(filteredData).sort(
     (a, b) => b.value - a.value
@@ -77,7 +78,7 @@ function CountryRatio() {
   };
 
   return (
-    <div className="w-[22%] h-[405px]  bg-[#fff] rounded-[8px] relative shadow">
+    <div className="w-[22%] h-[405px] bg-[#fff] rounded-[8px] relative shadow">
       <div className="p-[16px]">
         <h2 className="text-[#00263E] font-semibold text-[16px]">
           Usage by Country
@@ -90,7 +91,7 @@ function CountryRatio() {
             <p className="text-[20px] font-bold text-[#00263E]">
               {topCountry.percent}%
             </p>
-            <p className="text-[13px]  text-[#72849A]">Top Country</p>
+            <p className="text-[13px] text-[#72849A]">Top Country</p>
           </div>
           <PieChart width={100} height={100} className="">
             <Pie
@@ -100,8 +101,7 @@ function CountryRatio() {
               outerRadius={40}
               fill="#8884d8"
               dataKey="value"
-              className="outline-none"
-            >
+              className="outline-none">
               {top4Data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
@@ -116,8 +116,7 @@ function CountryRatio() {
             <li
               key={index}
               style={{ display: "flex", alignItems: "center", gap: 10 }}
-              className="my-[10px] flex items-center justify-between"
-            >
+              className="my-[10px] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div
                   style={{
@@ -134,7 +133,7 @@ function CountryRatio() {
           ))}
         </ul>
       </div>
-      <div className="w-full flex items-start justify-start border-t-2   pt-[15px]     absolute bottom-[15px] ">
+      <div className="w-full flex items-start justify-start border-t-2 pt-[15px] absolute bottom-[15px]">
         <div className="pl-[20px]">
           <Dropdown
             width={190}

@@ -597,76 +597,12 @@ import Sidebar from "@/components/Sidebar";
 import { FaArrowRightLong } from "react-icons/fa6";
 import axios from "axios";
 import { data } from "autoprefixer";
-
-const userData = [
-  {
-    userID: 1124,
-    fullName: "Ronald Richards",
-    country: "Mexico",
-    type: "Patient",
-    lastTimeActive: "June 10, 2021",
-    sessions: 158,
-  },
-  {
-    userID: 3524,
-    fullName: "Albert Flores",
-    country: "Mexico",
-    type: "Patient",
-    lastTimeActive: "June 10, 2021",
-    sessions: 154,
-  },
-  {
-    userID: 7571,
-    fullName: "Wade Warren",
-    country: "Mexico",
-    type: "Patient",
-    lastTimeActive: "June 10, 2021",
-    sessions: 152,
-  },
-  {
-    userID: 124,
-    fullName: "Brooklyn Simmons",
-    country: "Mexico",
-    type: "Patient",
-    lastTimeActive: "June 10, 2021",
-    sessions: 149,
-  },
-  {
-    userID: 235,
-    fullName: "Devon Lane",
-    country: "Mexico",
-    type: "Healthcare provider",
-    lastTimeActive: "June 10, 2021",
-    sessions: 145,
-  },
-  {
-    userID: 256,
-    fullName: "Marvin McKinney",
-    country: "Mexico",
-    type: "Healthcare provider",
-    lastTimeActive: "June 10, 2021",
-    sessions: 140,
-  },
-  {
-    userID: 45,
-    fullName: "Savannah Nguyen",
-    country: "Mexico",
-    type: "Healthcare provider",
-    lastTimeActive: "June 10, 2021",
-    sessions: 126,
-  },
-  {
-    userID: 1001,
-    fullName: "Bessie Cooper",
-    country: "Mexico",
-    type: "Healthcare provider",
-    lastTimeActive: "June 10, 2021",
-    sessions: 115,
-  },
-];
-const top5Users = userData
-  .sort((a, b) => b.sessions - a.sessions) // Sort by sessions in descending order
-  .slice(0, 5);
+import {
+  fetchDoctorUserData,
+  fetchPatientUserData,
+  fetchUserData,
+} from "@/API/dataFetch";
+import LineGraph from "@/components/LineGraph";
 
 const unitMapping = {
   bloodGlucose: "ml/mol",
@@ -675,23 +611,6 @@ const unitMapping = {
   heartrate: "bpm",
   bp: "mmHg",
   mood: "",
-};
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    const formattedValue = Number(payload[0].value).toFixed(2);
-    const unit = unitMapping[payload[0].dataKey] || "";
-
-    return (
-      <div className="bg-white p-2  shadow-3xl rounded">
-        {/* <p className="label">{`Date: ${label}`}</p> */}
-        <p className="text-[#72849A] text-[12px]">Wed 25</p>
-        <p className="text-[#00263E] text-[14px] font-medium">Avg. 17 mmol/L</p>
-        {/* <p className="text-[#00263E] font-medium">{`Avg: ${formattedValue} ${unit}`}</p> */}
-      </div>
-    );
-  }
-  return null;
 };
 
 const domainMapping = {
@@ -703,48 +622,36 @@ const domainMapping = {
   mood: [0, 10],
 };
 
-const LineGraph = ({ data, valueKey }) => {
-  const tickFormatter = (tick) => tick.slice(-2);
-  return (
-    <div className="w-[100%] h-[330px]">
-      <ResponsiveContainer>
-        <LineChart data={data} margin={{ left: 20, right: 10 }}>
-          <CartesianGrid stroke="#EEEEEE" vertical={false} />
-          <XAxis dataKey="date" tickFormatter={tickFormatter} />
-          <YAxis
-            domain={domainMapping[valueKey]}
-            axisLine={false}
-            tickLine={false}
-            orientation="right"
-            tickFormatter={(value) => `${value}mlol/L`}
-            tick={{ fill: "#455560", fontSize: 12 }}
-          />
-
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{
-              stroke: "#ABABAB",
-              strokeDasharray: "2 4",
-              strokeWidth: 1,
-              strokeDashoffset: 5,
-            }}
-          />
-          <Line
-            type="linear"
-            dataKey={valueKey}
-            stroke="#76BC21"
-            strokeWidth={3}
-            activeDot={{
-              stroke: "#76BC21",
-              strokeWidth: 10, // Increase the width
-              strokeDasharray: "3 0", // Make the line dotted
-            }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
-};
+const filteredData2 = [
+  {
+    date: "2024-08-10",
+    bloodPressure: 105,
+    bloodGlucose: 76,
+    oxygenSat: 95,
+    bodytemp: 36,
+    heartrate: 68,
+    mood: 78,
+  },
+  {
+    date: "2024-08-11",
+    bloodPressure: 100,
+    bloodGlucose: 78,
+    oxygenSat: 96,
+    bodytemp: 37,
+    heartrate: 70,
+    mood: 80,
+  },
+  {
+    date: "2024-08-12",
+    bloodPressure: 90,
+    bloodGlucose: 77,
+    oxygenSat: 94,
+    bodytemp: 36.5,
+    heartrate: 67,
+    mood: 79,
+  },
+  // Add more data points as needed
+];
 
 const Overview = () => {
   const [country, setCountry] = useState("All Countries");
@@ -752,11 +659,24 @@ const Overview = () => {
   const [valueKey, setValueKey] = useState("bloodGlucose");
   const [filteredData, setFilteredData] = useState(initialData);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [top5Users, setTop5Users] = useState([]);
+  const [user, setUser] = useState([]);
+  const [filteredData1, setFilteredData1] = useState([]);
 
   const handleClick = (index, parName) => {
     setActiveIndex(index);
     setValueKey(parName);
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetchUserData();
+      setFilteredData1(res);
+      console.log("res", res);
+    };
+
+    getData();
+  }, []); // add an empty dependency array to run the effect only once
 
   useEffect(() => {
     let filtered = initialData;
@@ -840,6 +760,7 @@ const Overview = () => {
 
   const handleDayChange = (option) => {
     setDays(parseInt(option.value));
+    console.log(days);
   };
 
   const [data, setData] = useState([]);
@@ -968,6 +889,7 @@ const Overview = () => {
         },
       ];
 
+      console.log("data", newData);
       setData(newData); // Save the newData array in state
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -975,10 +897,56 @@ const Overview = () => {
     }
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Format the date to YYYY-MM-DD
+    const formattedDate = date.toISOString().split("T")[0];
+
+    return formattedDate;
+  };
+
   // Fetch data when the component mounts
   useEffect(() => {
     fetchDataAndCalculateAverage();
   }, []);
+
+  useEffect(() => {
+    const fetchAndCombineData = async () => {
+      try {
+        const doctorData = await fetchDoctorUserData();
+        const patientData = await fetchPatientUserData();
+
+        // Combine the data in an alternating fashion
+        const maxLength = Math.max(doctorData.length, patientData.length);
+        const combinedData = [];
+
+        for (let i = 0; i < maxLength; i++) {
+          if (i < doctorData.length) {
+            combinedData.push(doctorData[i]);
+          }
+          if (i < patientData.length) {
+            combinedData.push(patientData[i]);
+          }
+        }
+
+        setUser(combinedData);
+        const top5Users = combinedData
+          .sort((a, b) => b.sessions - a.sessions) // Sort by sessions in descending order
+          .slice(0, 5);
+
+        setTop5Users(top5Users); // Store the combined data in state
+      } catch (error) {
+        console.error("Error combining data:", error);
+      }
+    };
+
+    fetchAndCombineData(); // Call the function to fetch and combine data
+  }, []);
+
+  useEffect(() => {
+    console.log("user");
+  });
 
   return (
     <div className="flex">
@@ -1087,6 +1055,7 @@ const Overview = () => {
             </div>
           </div>
         </div>
+
         <div className="bg-[#fff] rounded-[8px]">
           <div className="grid grid-cols-6 mt-[24px] px-[16px]">
             {Array.isArray(data) && data.length > 0 ? (
@@ -1094,26 +1063,23 @@ const Overview = () => {
                 return (
                   <Link
                     key={item.name}
-                    className={`bg-[#EEEEEE] p-[16px] hover:bg-[#FAFAFA] transition-all border-t-4 h-[126px] ${
+                    className={`bg-[#FFFFFF] p-[16px] hover:bg-[#FAFAFA] transition-all border-t-4 h-[126px] ${
                       activeIndex === index
                         ? "border-[#76BC21] bg-[#fff]"
                         : "border-none"
                     }`}
-                    onClick={() => handleClick(index, item.parName)}
-                  >
+                    onClick={() => handleClick(index, item.parName)}>
                     <p className="text-[#00263E]">{item?.name}</p>
                     <p
                       className={`text-[#00263E] ${
                         activeIndex === index ? "font-[700]" : ""
-                      }`}
-                    >
+                      }`}>
                       Avg
                     </p>
                     <p
                       className={`text-[#00263E] ${
                         activeIndex === index ? "font-[700]" : ""
-                      }`}
-                    >
+                      }`}>
                       {item?.value} {item?.unit}
                     </p>
                     <div className="flex gap-1 items-center">
@@ -1134,7 +1100,7 @@ const Overview = () => {
             )}
           </div>
           <div className="mt-[16px] px-[16px]">
-            <LineGraph type="" data={filteredData} valueKey={valueKey} />
+            <LineGraph type="" data={filteredData1} valueKey={valueKey} />
           </div>
           <div className="mb-4 flex gap-4 p-[16px] border-[#eee] border-t-2">
             <div>
@@ -1157,8 +1123,8 @@ const Overview = () => {
         </div>
         <div className="flex items-center justify-between  flex-wrap ">
           <BarGraph />
-          <SexRatio />
-          <CountryRatio />
+          <SexRatio data={user} />
+          <CountryRatio data={user} />
         </div>
         <div className="bg-[#fff] mt-[16px] rounded-[8px]">
           <div className="flex items-center justify-between p-[16px]">
@@ -1237,18 +1203,23 @@ const Overview = () => {
             <TableBody>
               {top5Users.map((user) => (
                 <TableRow
-                  key={user.userID}
+                  key={user?._id}
                   className="cursor-pointer"
-                  onClick={() => handleRowClick(user)}
-                >
-                  <TableCell className="pl-[40px]">{user.userID}</TableCell>
+                  onClick={() => handleRowClick(user)}>
+                  <TableCell className="pl-[40px]">{user._id}</TableCell>
                   <TableCell className="text-[#3E79F7]">
-                    {user.fullName}
+                    {user?.firstName} {user?.lastName}
                   </TableCell>
-                  <TableCell>{user.country}</TableCell>
-                  <TableCell>{user.type}</TableCell>
-                  <TableCell>{user.lastTimeActive}</TableCell>
-                  <TableCell className="pl-[40px]">{user.sessions}</TableCell>
+                  <TableCell>{user?.country || "Mexico"}</TableCell>
+                  <TableCell>
+                    {user?.userType != "doctor"
+                      ? "Healthcare Provider"
+                      : user.userType}
+                  </TableCell>
+                  <TableCell>{formatDate(user?.updatedAt)}</TableCell>
+                  <TableCell className="pl-[40px]">
+                    {user?.sessionCount}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

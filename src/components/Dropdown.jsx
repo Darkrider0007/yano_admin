@@ -168,9 +168,10 @@ const Dropdown = ({ options, onOptionSelect, defaultValue, width = 160 }) => {
         (option) => option.value === defaultValue
       );
       setSelectedOption(defaultOption);
+
       onOptionSelect(defaultOption); // Update the parent's state with the default value
     }
-  }, [defaultValue, options, onOptionSelect]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -195,7 +196,9 @@ const Dropdown = ({ options, onOptionSelect, defaultValue, width = 160 }) => {
   };
 
   const handleOptionClick = (option) => {
+    console.log("option", option);
     setSelectedOption(option);
+    console.log("selectedOption", selectedOption);
     setIsOpen(false);
     onOptionSelect(option); // Update the parent's state
   };
@@ -207,8 +210,7 @@ const Dropdown = ({ options, onOptionSelect, defaultValue, width = 160 }) => {
           style={{ width: width }}
           type="button"
           className="flex items-center gap-[30px] bg-[#fafafa] justify-between w-[200px] h-[40px] rounded-md border border-gray-300 text-[#455560] shadow-sm px-4 py-2"
-          onClick={toggleDropdown}
-        >
+          onClick={toggleDropdown}>
           {selectedOption ? `${selectedOption.label} ` : "Options"}
           {isOpen ? (
             <img
@@ -231,20 +233,17 @@ const Dropdown = ({ options, onOptionSelect, defaultValue, width = 160 }) => {
           className="origin-top-right z-50 absolute left-0 mt-2 w-[200px] rounded-md shadow bg-white"
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button"
-        >
+          aria-labelledby="menu-button">
           <div className="py-1" role="none">
             {options.map((option) => (
-              <a
+              <button
                 key={option.value}
-                href="#"
                 className="flex items-center text-[#455560] px-4 py-2 text-sm"
                 role="menuitem"
-                onClick={() => handleOptionClick(option)}
-              >
+                onClick={() => handleOptionClick(option)}>
                 <div className="w-[24px] h-[24px] rounded-full border-[3px] border-[#707070] mr-2"></div>
                 {option.label}
-              </a>
+              </button>
             ))}
           </div>
         </div>
