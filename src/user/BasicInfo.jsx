@@ -12,6 +12,8 @@ import check from "../assets/icons/check.png";
 import closegreen from "../assets/icons/closegreen.png";
 import profile from "../assets/icons/profile.png";
 import BackBtn from "@/components/BackBtn";
+import PhoneFormDataPass from "@/components/PhoneNumberDataPass";
+import countryRev from "../assets/countryRev.json";
 
 function BasicInfo() {
   const [show, setShow] = useState(false);
@@ -21,6 +23,12 @@ function BasicInfo() {
   const [isSave, setIsSave] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [country, setCountry] = useState("India");
+
+  const location = useLocation();
+
+  console.log("location", location);
+
   // const [userData, setUserData] = useState({
   //   firstName: "Jenny",
   //   lastName: "Wilson",
@@ -32,15 +40,29 @@ function BasicInfo() {
   //   password: "",
   //   type: "patient",
   // });
+
+  // console.log(userData);
+
+  const data = location.state;
+
+  console.log("data", data);
+
   const params = useParams();
 
-  const location = useLocation();
+  // const location = useLocation();
 
-  const { user } = params;
+  const { userID } = params;
 
-  useEffect(() => {
-    console.log("Received user:", user);
-  }, []);
+  console.log("userID", userID);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Format the date to YYYY-MM-DD
+    const formattedDate = date.toISOString().split("T")[0];
+
+    return formattedDate;
+  };
 
   let name, value;
   const handleInputs = (e) => {
@@ -59,7 +81,17 @@ function BasicInfo() {
     setSelectedRole(event.target.value);
   };
 
-  const [selectedRole, setSelectedRole] = useState("patient");
+  const [selectedRole, setSelectedRole] = useState("");
+
+  useEffect(() => {
+    if (data?.userType === "doctor") {
+      setSelectedRole("provider");
+    } else {
+      setSelectedRole("patient");
+    }
+
+    setCountry(data?.country);
+  }, [data]);
 
   return (
     <div className="flex">
@@ -69,8 +101,7 @@ function BasicInfo() {
         <div
           className={` items-center justify-between rounded-[8px] px-[20px] py-[16px] w-[626px] text-[#155724]  my-[24px]  font-medium bg-[#C3E6CB] ${
             isSave ? "flex" : "hidden"
-          }`}
-        >
+          }`}>
           <p className="">The user's password has been successfully changed.</p>
           <img
             onClick={() => {
@@ -85,20 +116,27 @@ function BasicInfo() {
           <h1 className="font-[600] text-[20px]">Basic information</h1>
           <div>
             <p className="text-darkblue pb-1 mt-[24px]">Profile picture</p>
-            <div className="bg-[#fafafa] w-[140px] h-[140px] flex items-center justify-center border border-dashed border-[#DADCE0] rounded-[8px]">
+            {data?.userImg.secure_url ? (
               <img
-                src={profile}
+                src={data?.userImg.secure_url}
                 alt=""
-                className="w-[56px] h-[56px] object-cover"
+                className="w-[100px] h-[100px] rounded-full object-cover"
               />
-            </div>
+            ) : (
+              <div className="bg-[#fafafa] w-[140px] h-[140px] flex items-center justify-center border border-dashed border-[#DADCE0] rounded-[8px]">
+                <img
+                  src={data?.userImg.secure_url}
+                  alt=""
+                  className="w-[100px] h-[100px] rounded-full object-cover"
+                />
+              </div>
+            )}
           </div>
           <div className="mt-[20px]">
             <p>Name: {location?.state?.user}</p>
             <label
               htmlFor="firstName"
-              className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-            >
+              className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               First Name
             </label>
             <input
@@ -107,7 +145,7 @@ function BasicInfo() {
               id="firstName"
               name="firstName"
               autoComplete="false"
-              // value={data?.firstName}
+              value={data?.firstName}
               readOnly
               // onChange={handleInputs}
               // disabled
@@ -116,8 +154,7 @@ function BasicInfo() {
           <div className="mt-[20px]">
             <label
               htmlFor="lastName"
-              className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-            >
+              className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Last Name
             </label>
             <input
@@ -126,7 +163,7 @@ function BasicInfo() {
               id="lastName"
               name="lastName"
               autoComplete="false"
-              // value={data?.lastName}
+              value={data?.lastName}
               // onChange={handleInputs}
               disabled
             />
@@ -134,8 +171,7 @@ function BasicInfo() {
           <div className="mt-[20px]">
             <label
               htmlFor="email"
-              className="text-[14px] mb-[4px] text-[#00263E] font-[500]"
-            >
+              className="text-[14px] mb-[4px] text-[#00263E] font-[500]">
               Email address
             </label>
             <input
@@ -143,21 +179,27 @@ function BasicInfo() {
               type="text"
               id="email"
               name="email"
-              autoComplete="false"
-              // value={userData.email}
-              disabled
-              // onChange={handleInputs}
+              autoComplete="off"
+              value={data?.email || ""}
+              readOnly
             />
           </div>
 
-          <PhoneForm label="Phone number" />
+          <PhoneFormDataPass
+            value={data?.phoneNumber}
+            countryCode={data?.country || countryRev[country]}
+            label="Phone number"
+          />
+          <PhoneFormDataPass
+            value={data?.phoneNumber}
+            countryCode={data?.country || countryRev[country] || "CA"}
+            label="Emergency contact"
+          />
 
-          <PhoneForm label="Emergency contact " />
           <div className="mt-[20px] mb-[16px]">
             <label
               htmlFor="email"
-              className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-            >
+              className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
             <div className="flex items-center justify-between w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
@@ -167,7 +209,7 @@ function BasicInfo() {
                 id="dob"
                 name="dob"
                 autoComplete="false"
-                // value={userData.dob}
+                value={formatDate(data?.dateOfBirth)}
                 // onChange={handleInputs}
                 disabled
               />
@@ -178,21 +220,20 @@ function BasicInfo() {
               />
             </div>
           </div>
-          <div className="flex items-center gap-3 cursor-none">
+          {/* <div className="flex items-center gap-3 cursor-none">
             <label
               className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${
-                selectedRole === "patient"
+                userType
+ === "patient"
                   ? "border-[#76BC21]"
                   : "border-gray-300"
-              }`}
-            >
+              }`}>
               <div
                 className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
                   selectedRole === "patient"
                     ? "border-[#76BC21]"
                     : "border-gray-300"
-                }`}
-              >
+                }`}>
                 {selectedRole === "patient" && (
                   <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
                 )}
@@ -202,7 +243,7 @@ function BasicInfo() {
                 className="hidden"
                 name="role"
                 value="patient"
-                // checked={selectedRole === "patient"}
+                checked={selectedRole === "patient"}
                 // onChange={handleRoleChange}
               />
               <span className="ml-2 text-gray-700">Patient</span>
@@ -212,15 +253,13 @@ function BasicInfo() {
                 selectedRole === "provider"
                   ? "border-[#76BC21]"
                   : "border-gray-300"
-              }`}
-            >
+              }`}>
               <div
                 className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
                   selectedRole === "provider"
                     ? "border-[#76BC21]"
                     : "border-gray-300"
-                }`}
-              >
+                }`}>
                 {selectedRole === "provider" && (
                   <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
                 )}
@@ -230,8 +269,63 @@ function BasicInfo() {
                 className="hidden"
                 name="role"
                 value="provider"
-                // checked={selectedRole === "provider"}
+                checked={selectedRole === "provider"}
                 // onChange={handleRoleChange}
+              />
+              <span className="ml-2 text-gray-700">Healthcare Provider</span>
+            </label>
+          </div> */}
+
+          <div className="flex items-center gap-3 cursor-none">
+            <label
+              className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${
+                selectedRole === "patient"
+                  ? "border-[#76BC21]"
+                  : "border-gray-300"
+              }`}>
+              <div
+                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
+                  selectedRole === "patient"
+                    ? "border-[#76BC21]"
+                    : "border-gray-300"
+                }`}>
+                {selectedRole === "patient" && (
+                  <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
+                )}
+              </div>
+              <input
+                type="radio"
+                className="hidden"
+                name="role"
+                value="patient"
+                checked={selectedRole === "patient"}
+                onChange={handleRoleChange}
+              />
+              <span className="ml-2 text-gray-700">Patient</span>
+            </label>
+            <label
+              className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${
+                selectedRole === "provider"
+                  ? "border-[#76BC21]"
+                  : "border-gray-300"
+              }`}>
+              <div
+                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
+                  selectedRole === "provider"
+                    ? "border-[#76BC21]"
+                    : "border-gray-300"
+                }`}>
+                {selectedRole === "provider" && (
+                  <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
+                )}
+              </div>
+              <input
+                type="radio"
+                className="hidden"
+                name="role"
+                value="provider"
+                checked={selectedRole === "provider"}
+                onChange={handleRoleChange}
               />
               <span className="ml-2 text-gray-700">Healthcare Provider</span>
             </label>
@@ -244,8 +338,7 @@ function BasicInfo() {
           <form action="" onSubmit={handleSubmit}>
             <label
               htmlFor="password"
-              className="text-[14px] mb-[4px] font-[500]"
-            >
+              className="text-[14px] mb-[4px] font-[500]">
               Password
             </label>
             <div className="flex items-center justify-between h-[49px] border bg-[#FAFAFA] px-[16px] py-[16px] rounded-[8px]">
@@ -260,22 +353,20 @@ function BasicInfo() {
                 id="password"
                 name="password"
                 autoComplete="false"
-                value={newPassword}
+                value={data?.password}
                 onChange={handleInputs}
               />
-              <Link
+              <p
                 className="text-[#72849A80] text-[12px]"
-                onClick={() => setShow(!show)}
-              >
+                onClick={() => setShow(!show)}>
                 {show ? "Hide" : "Show"}
-              </Link>
+              </p>
             </div>
 
             <div className=" mt-[32px]">
               <button
                 type="submit"
-                className="  font-medium text-[14px]  px-[24px] py-[12px] text-white bg-[#00263E] rounded-[8px] "
-              >
+                className="  font-medium text-[14px]  px-[24px] py-[12px] text-white bg-[#00263E] rounded-[8px] ">
                 Change password
               </button>
             </div>

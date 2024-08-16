@@ -121,11 +121,14 @@ export const signupUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/signin",
   async (userCredentials, { rejectWithValue }) => {
+    console.log(userCredentials);
     try {
       const request = await axios.post(
         "https://yano-backend.onrender.com/api/userdoctor/login",
-        adminData
+        userCredentials
       );
+
+      console.log(request);
       const response = await request.data;
       localStorage.setItem("user", JSON.stringify(response));
       return response;

@@ -14,9 +14,11 @@ import detail from "../assets/icons/detail.png";
 import calender from "../assets/icons/calender.png";
 import peopleicon from "../assets/icons/peopleicon.png";
 import BackBtn from "@/components/BackBtn";
+import InfoShareToNextPageCard from "@/components/InfoShareToNextPageCard";
 
 const UserDetail = () => {
   const location = useLocation();
+
   const user = location.state?.user;
 
   const calculateAge = (dateOfBirthString) => {
@@ -39,10 +41,22 @@ const UserDetail = () => {
   // const [userData, setUserData] = useState(null);
   // console.log(userData);
   const navigate = useNavigate();
+
+  const routeState = user;
   const handleDetails = (user) => {
     // console.log("userdata", userData);
-    navigate(`/user/basicInfo/${user._id}`, { state: { user } });
+    // navigate(`/user/basicInfo/${user._id}`, { state: { user } });
+    navigate(`/user/basicInfo/${user._id}`, { state: { routeState } });
   };
+
+  const handleHealthDetails = (user) => {
+    navigate(`/user/healthProfile`, { state: { routeState } });
+  };
+
+  const handleHealthTracker = (user) => {
+    navigate(`/user/healthTracker`, { state: { routeState } });
+  };
+
   // useEffect(() => {
   //   return () => {
   //     setUserData(user);
@@ -137,8 +151,9 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
+
         <div className="flex gap-[16px] mt-[24px]">
-          <InfoCard
+          <InfoShareToNextPageCard
             onClick={() => handleDetails(user)}
             title="Basic Information"
             text="Name,email,password..."
@@ -149,10 +164,11 @@ const UserDetail = () => {
                 className="w-[24px] h-[24px] object-contain"
               />
             }
+            state={routeState}
           />
 
           <InfoCard
-            // onClick={() => handleDetails(user)}
+            onClick={() => handleHealthDetails(user)}
             title="Helth Profile"
             text="Medical history summary"
             img={
@@ -165,7 +181,7 @@ const UserDetail = () => {
           />
 
           <InfoCard
-            // onClick={() => handleDetails(user)}
+            onClick={() => handleHealthTracker(user)}
             title="Health tracker"
             text="Reading history"
             img={

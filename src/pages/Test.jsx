@@ -1,34 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { fetchDoctorData, fetchPatientData } from "@/API/dataFetch";
 
 const Test = () => {
   const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
-    const fetchDoctorData = async () => {
-      try {
-        const response = await axios.get(
-          "https://yano-backend.onrender.com/api/userdoctor"
-        );
-        return response.data.userData; // Assuming 'userData' is the array we need
-      } catch (error) {
-        console.error("Error fetching doctor data:", error);
-        return [];
-      }
-    };
-
-    const fetchPatientData = async () => {
-      try {
-        const response = await axios.get(
-          "https://yano-backend.onrender.com/api/userpatient"
-        );
-        return response.data.userData; // Assuming 'userData' is the array we need
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-        return [];
-      }
-    };
-
     const fetchAndCombineData = async () => {
       try {
         const doctorData = await fetchDoctorData();

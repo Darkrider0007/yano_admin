@@ -29,6 +29,7 @@ import CalenderTwoSide from "./CalenderTwoSide";
 import Notification from "@/utils/Notification";
 import CustomCheckBox from "@/components/CustomCheckBox";
 import axios from "axios";
+import { fetchDoctorUserData, fetchPatientUserData } from "@/API/dataFetch";
 
 const data = [
   {
@@ -96,34 +97,10 @@ export default function User() {
   const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
-    const fetchDoctorData = async () => {
-      try {
-        const response = await axios.get(
-          "https://yano-backend.onrender.com/api/userdoctor"
-        );
-        return response.data.userData; // Assuming 'userData' is the array we need
-      } catch (error) {
-        console.error("Error fetching doctor data:", error);
-        return [];
-      }
-    };
-
-    const fetchPatientData = async () => {
-      try {
-        const response = await axios.get(
-          "https://yano-backend.onrender.com/api/userpatient"
-        );
-        return response.data.userData; // Assuming 'userData' is the array we need
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-        return [];
-      }
-    };
-
     const fetchAndCombineData = async () => {
       try {
-        const doctorData = await fetchDoctorData();
-        const patientData = await fetchPatientData();
+        const doctorData = await fetchDoctorUserData();
+        const patientData = await fetchPatientUserData();
 
         // Combine the data in an alternating fashion
         const maxLength = Math.max(doctorData.length, patientData.length);
@@ -364,8 +341,7 @@ export default function User() {
                       <div
                         className={`flex items-center border rounded-[8px]  bg-[#fafafa] h-[40px] px-2 ${
                           filter ? "w-1/4" : "w-1/3"
-                        }`}
-                      >
+                        }`}>
                         <img src={search} alt="" />
                         <input
                           className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A]"
@@ -381,8 +357,7 @@ export default function User() {
                             onClick={() => {
                               setFilter(true);
                             }}
-                            className="flex items-center flex-wrap gap-[8px] border-2 px-[12px] py-[8px] rounded-[8px]"
-                          >
+                            className="flex items-center flex-wrap gap-[8px] border-2 px-[12px] py-[8px] rounded-[8px]">
                             <img
                               src={filterimg}
                               alt=""
@@ -417,8 +392,7 @@ export default function User() {
                               onClick={() => {
                                 setShowCalender(!showCalender);
                               }}
-                              className="flex items-center gap-2 px-[12px] py-[6px] border-2 rounded-[6px] bg-[#fafafa]"
-                            >
+                              className="flex items-center gap-2 px-[12px] py-[6px] border-2 rounded-[6px] bg-[#fafafa]">
                               <p className="text-[#455560]">
                                 May 8 - June 8, 1992
                               </p>
@@ -445,8 +419,7 @@ export default function User() {
                               onClick={() => {
                                 setFilter(false);
                               }}
-                              className="flex items-center justify-center px-[12px] py-[8px] border-2 rounded-[6px] bg-[#fff]"
-                            >
+                              className="flex items-center justify-center px-[12px] py-[8px] border-2 rounded-[6px] bg-[#fff]">
                               <img src={close} alt="" />
                             </Link>
                           </div>
@@ -552,8 +525,7 @@ export default function User() {
                             ? "bg-[#ECF2FE] hover:bg-[#ECF2FE]"
                             : ""
                         }`}
-                        key={user?._id}
-                      >
+                        key={user?._id}>
                         <TableCell>
                           <div className="flex items-center gap-[30px] text-[#00263E]">
                             <CustomCheckBox
@@ -567,8 +539,7 @@ export default function User() {
                         </TableCell>
                         <TableCell
                           onClick={() => handleRowClick(user)}
-                          className="text-[#3E79F7]"
-                        >
+                          className="text-[#3E79F7]">
                           {user?.firstName} {user?.lastName}
                         </TableCell>
                         <TableCell className="text-[#455560]">
@@ -591,8 +562,7 @@ export default function User() {
                         </TableCell>
                         <TableCell
                           onClick={(event) => handleActionClick(event, user)}
-                          className="pl-[35px] relative"
-                        >
+                          className="pl-[35px] relative">
                           <img
                             src={threedot}
                             alt=""
@@ -635,13 +605,11 @@ export default function User() {
         <div
           className="  absolute shadow  bg-white border rounded"
           style={{ top: popupPosition.top, left: popupPosition.left }}
-          ref={popupRef}
-        >
+          ref={popupRef}>
           <ul className="flex flex-col gap-[2px] m-[4px]">
             <li
               className=" flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}
-            >
+              onClick={closePopup}>
               <img
                 src={edit}
                 alt=""
@@ -663,8 +631,7 @@ export default function User() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]   "
-              onClick={closePopup}
-            >
+              onClick={closePopup}>
               <img
                 src={exportreport}
                 alt=""
@@ -674,8 +641,7 @@ export default function User() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}
-            >
+              onClick={closePopup}>
               <img
                 src={deactivate}
                 alt=""
