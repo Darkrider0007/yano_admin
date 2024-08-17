@@ -26,6 +26,7 @@ import BackBtn from "@/components/BackBtn";
 import { fetchDoctorData } from "@/API/dataFetch";
 import { truncateString } from "@/helpers/truncateString";
 import { Permissions } from "@/constant/permissions";
+import { toggleActive } from "@/API/sendData";
 
 function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,19 +98,24 @@ function AdminList() {
     setSelectedAdmin(null);
   };
 
-  const deactivateUser = () => {
-    console.log("deactivate user");
+  const deactivateUser = async () => {
+    // console.log("deactivate user");
 
-    const updatedAdmins = admin.map((item) => {
-      if (item.id === selectedAdmin.id) {
-        if (item.status === "active") {
-          return { ...item, status: "inactive" };
-        } else {
-          return { ...item, status: "active" };
-        }
-      }
-      return item;
+    const updateAdmin = await toggleActive(selectedAdmin.id, {
+      isActive: selectedAdmin.status === "active" ? false : true,
     });
+    const updatedAdmins =
+      updateAdmin &&
+      admin.map((item) => {
+        if (item.id === selectedAdmin.id) {
+          if (item.status === "active") {
+            return { ...item, status: "inactive" };
+          } else {
+            return { ...item, status: "active" };
+          }
+        }
+        return item;
+      });
 
     setAdmin(updatedAdmins);
   };
@@ -133,8 +139,8 @@ function AdminList() {
 
   const handleSendNotificationClick = () => {
     setShowSendNotification(true);
-    setSelectedAdmin(false);
     setPopupVisible(null);
+    // setSelectedAdmin(false);
   };
 
   useEffect(() => {
@@ -392,7 +398,12 @@ function AdminList() {
           </ul>
         </div>
       )}
-      {showSendNotification && <Notification handleClose={handleClose} />}
+      {showSendNotification && (
+        <Notification
+          name={selectedAdmin.full_name}
+          handleClose={handleClose}
+        />
+      )}
     </div>
   );
 }
