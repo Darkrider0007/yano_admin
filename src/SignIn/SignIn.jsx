@@ -31,10 +31,10 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email.trim() === "") {
-      setEmailError("! Enter an email address");
+      setEmailError("Enter an email address");
     }
     if (password.trim() === "") {
-      setPasswordError("! Plese enter password");
+      setPasswordError("Plese enter password");
     }
     if (email && password) {
       const result = await dispatch(loginUser({ email, password }));
@@ -57,8 +57,7 @@ function SignIn() {
           <div
             className={`flex items-center h-[49px] border ${
               isEmailError ? "border-[#DADCE0]" : "border-[#DADCE0]"
-            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}
-          >
+            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}>
             <MdOutlineMail />
             <input
               type="email"
@@ -81,8 +80,7 @@ function SignIn() {
           <div
             className={`flex items-center h-[49px] border ${
               isPasswordError ? "border-[#DADCE0]" : "border-[#DADCE0]"
-            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}
-          >
+            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}>
             <CiLock />
             <input
               type={show ? "text" : "password"}
@@ -92,8 +90,7 @@ function SignIn() {
             />
             <Link
               className="text-[#72849A80] text-[12px]"
-              onClick={() => setShow(!show)}
-            >
+              onClick={() => setShow(!show)}>
               {show ? "Hide" : "Show"}
             </Link>
           </div>
@@ -114,8 +111,7 @@ function SignIn() {
           </Link>
           <button
             type="submit"
-            className=" w-[100%] h-[50px] bg-[#00263E] text-[#fff] rounded-[8px] mt-[10px] font-[500]"
-          >
+            className=" w-[100%] h-[50px] bg-[#00263E] text-[#fff] rounded-[8px] mt-[10px] font-[500]">
             Log in
           </button>
           {error && (

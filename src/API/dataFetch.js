@@ -135,8 +135,6 @@ export const fetchUserData = async () => {
     // Sort the data by date
     transformedData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    console.log("Transformed Data", transformedData);
-
     return transformedData;
   } catch (error) {
     console.log(error);

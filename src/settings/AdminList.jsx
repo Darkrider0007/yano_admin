@@ -23,48 +23,22 @@ import exportreport from "../assets/icons/export.png";
 import deactivate from "../assets/icons/deactivate.png";
 import Notification from "@/utils/Notification";
 import BackBtn from "@/components/BackBtn";
-
-const admin = [
-  {
-    id: "001",
-    full_name: "John Doe",
-    permission: "Edit user,  Export user...",
-    date_of_creation: "2024-07-25",
-    status: "active",
-  },
-  {
-    id: "002",
-    full_name: "John Doe",
-    permission: "Edit user,  Export user...",
-    date_of_creation: "2024-07-25",
-    status: "active",
-  },
-  {
-    id: "003",
-    full_name: "John Doe",
-    permission: "Edit user,  Export user...",
-    date_of_creation: "2024-07-25",
-    status: "active",
-  },
-  {
-    id: "004",
-    full_name: "John Doe",
-    permission: "Edit user,  Export user...",
-    date_of_creation: "2024-07-25",
-    status: "active",
-  },
-];
+import { fetchDoctorData } from "@/API/dataFetch";
+import { truncateString } from "@/helpers/truncateString";
+import { Permissions } from "@/constant/permissions";
 
 function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState(null);
+  const [admin, setAdmin] = useState([]);
 
-  //   const navigate = useNavigate();
   const filteredAdmins = useMemo(() => {
     return admin.filter(
       (admin) =>
-        admin.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        admin.id.includes(searchQuery)
+        `${admin.firstName} ${admin.lastName}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        admin._id.includes(searchQuery)
     );
   }, [searchQuery, admin]);
 
@@ -94,6 +68,7 @@ function AdminList() {
     }
     setSortConfig({ key, direction });
   };
+
   const navigate = useNavigate();
 
   const handleRowClick = (user) => {
@@ -122,6 +97,23 @@ function AdminList() {
     setSelectedAdmin(null);
   };
 
+  const deactivateUser = () => {
+    console.log("deactivate user");
+
+    const updatedAdmins = admin.map((item) => {
+      if (item.id === selectedAdmin.id) {
+        if (item.status === "active") {
+          return { ...item, status: "inactive" };
+        } else {
+          return { ...item, status: "active" };
+        }
+      }
+      return item;
+    });
+
+    setAdmin(updatedAdmins);
+  };
+
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
       closePopup();
@@ -134,16 +126,39 @@ function AdminList() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const handleClose = () => {
     setShowSendNotification(false);
   };
+
   const handleSendNotificationClick = () => {
     setShowSendNotification(true);
-    // setSelectedUser(null);
-    // popupVisible && selectedAdmin;
     setSelectedAdmin(false);
     setPopupVisible(null);
   };
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      const response = await fetchDoctorData();
+      const transformedData = response.map((item) => ({
+        id: item._id,
+        full_name: `${item.firstName} ${item.lastName}`,
+        permission: Object.keys(item.permission)
+          .filter((key) => item.permission[key])
+          .map((key) => Permissions[key])
+          .join(", "),
+        date_of_creation: new Date(item.createdAt).toLocaleDateString(),
+        status: item.isActive ? "active" : "inactive",
+        firstName: item.firstName,
+        lastName: item.lastName,
+        email: item.email,
+        password: item.password,
+        permissions: item.permission,
+      }));
+      setAdmin(transformedData);
+    };
+    fetchAdmins();
+  }, []);
 
   return (
     <div className="h-[calc(100vh-80px)] flex">
@@ -152,7 +167,7 @@ function AdminList() {
         <div className="flex justify-between items-center">
           <BackBtn />
           <Link to="createAdmin">
-            <Button className=" flex gap-3 items-center justify-center ">
+            <Button className="flex gap-3 items-center justify-center">
               <span>
                 <FaPlus size={12} />
               </span>
@@ -160,18 +175,18 @@ function AdminList() {
             </Button>
           </Link>
         </div>
-        <div className=" mb-[24px] ">
+        <div className="mb-[24px]">
           <h1 className="text-[24px] font-[700]">Admin List</h1>
           <p className="text-[14px] font-[400] text-[#72849A]">
             Yano's admin user list
           </p>
         </div>
-        <div className="bg-[#fff] rounded-[8px] ">
+        <div className="bg-[#fff] rounded-[8px]">
           <form className="p-[16px]">
-            <div className="flex items-center border rounded-[8px] md:w-2/3 lg:w-1/3 bg-[#fafafa] h-[40px] px-2 ">
+            <div className="flex items-center border rounded-[8px] md:w-2/3 lg:w-1/3 bg-[#fafafa] h-[40px] px-2">
               <img src={search} alt="" />
               <input
-                className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A] "
+                className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A]"
                 placeholder="Search for users..."
                 type="search"
                 value={searchQuery}
@@ -198,8 +213,7 @@ function AdminList() {
                 </TableHead>
                 <TableHead
                   onClick={() => requestSort("full_name")}
-                  className="cursor-pointer"
-                >
+                  className="cursor-pointer">
                   <div className="flex items-center gap-3">
                     <p className="text-[#1A3353] font-medium">Full name</p>
                     <img
@@ -211,8 +225,7 @@ function AdminList() {
                 </TableHead>
                 <TableHead
                   onClick={() => requestSort("permission")}
-                  className="cursor-pointer"
-                >
+                  className="cursor-pointer">
                   <div className="flex items-center gap-3">
                     <p className="text-[#1A3353] font-medium">Permissions</p>
                     <img
@@ -224,8 +237,7 @@ function AdminList() {
                 </TableHead>
                 <TableHead
                   onClick={() => requestSort("date_of_creation")}
-                  className="cursor-pointer"
-                >
+                  className="cursor-pointer">
                   <div className="flex items-center gap-3">
                     <p className="text-[#1A3353] font-medium">
                       Date of creation
@@ -239,8 +251,7 @@ function AdminList() {
                 </TableHead>
                 <TableHead
                   onClick={() => requestSort("status")}
-                  className="cursor-pointer"
-                >
+                  className="cursor-pointer">
                   <div className="flex items-center gap-3">
                     <p className="text-[#1A3353] font-medium">Status</p>
                     <img
@@ -273,26 +284,28 @@ function AdminList() {
                   </TableCell>
                   <TableCell
                     onClick={handleRowClick}
-                    className="text-[#3E79F7] cursor-pointer"
-                  >
+                    className="text-[#3E79F7] cursor-pointer">
                     {admin?.full_name}
                   </TableCell>
                   <TableCell className="text-[#455560]">
-                    {admin?.permission}
+                    {truncateString(admin?.permission, 30)}
                   </TableCell>
                   <TableCell className="text-[#455560]">
                     {admin?.date_of_creation}
                   </TableCell>
                   <TableCell>
-                    {" "}
-                    <div className="w-[55px] h-[23px] bg-[#E8F7F1] rounded-[4px] text-[#138F5B] p-[8px] flex justify-center items-center">
+                    <div
+                      className={`w-[55px] h-[23px] rounded-[4px] ${
+                        admin?.status == "active"
+                          ? "text-[#138F5B] bg-[#E8F7F1]"
+                          : "text-[#8F1C13] bg-[#F7E8EB] px-8"
+                      }   flex justify-center items-center`}>
                       <p>{admin?.status}</p>
                     </div>
                   </TableCell>
                   <TableCell
                     onClick={(e) => handleThreeDotClick(e, admin)}
-                    className="pl-[35px]"
-                  >
+                    className="pl-[35px]">
                     <img
                       className="w-[16px] cursor-pointer"
                       src={threedot}
@@ -326,24 +339,26 @@ function AdminList() {
         <div
           className="absolute shadow bg-white border rounded"
           style={{ top: popupPosition.top, left: popupPosition.left }}
-          ref={popupRef}
-        >
+          ref={popupRef}>
           <ul className="flex flex-col gap-[2px] m-[4px]">
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}
-            >
-              <img
-                src={edit}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-              <p className="text-[#455560] text-[14px]">Edit user</p>
+              onClick={closePopup}>
+              <Link
+                to={`/settings/adminList/editAdmin/${selectedAdmin.id}`}
+                className="w-full flex flex-row gap-[10px] items-center cursor-pointer hover:bg-[#F5F5F5]"
+                state={{ selectedAdmin }}>
+                <img
+                  src={edit}
+                  alt=""
+                  className="w-[16px] h-[16px] object-contain"
+                />
+                <p className="text-[#455560] text-[14px]">Edit user</p>
+              </Link>
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={handleSendNotificationClick}
-            >
+              onClick={handleSendNotificationClick}>
               <img
                 src={sendnoti}
                 alt=""
@@ -353,8 +368,7 @@ function AdminList() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}
-            >
+              onClick={closePopup}>
               <img
                 src={exportreport}
                 alt=""
@@ -364,8 +378,10 @@ function AdminList() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}
-            >
+              onClick={() => {
+                deactivateUser(selectedAdmin);
+                closePopup();
+              }}>
               <img
                 src={deactivate}
                 alt=""

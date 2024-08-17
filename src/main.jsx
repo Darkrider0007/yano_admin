@@ -32,6 +32,7 @@ import store from "./store/Store.js";
 import Test from "./pages/Test.jsx";
 import PrivateRoute from "./layout/PrivateRoute.jsx";
 import PublicRoute from "./layout/PublicRoute.jsx";
+import EditAdmin from "./settings/EditAdmin.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -121,6 +122,14 @@ const router = createBrowserRouter(
         element={
           <PrivateRoute>
             <CreateAdmin />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings/adminList/editAdmin/:adminID"
+        element={
+          <PrivateRoute>
+            <EditAdmin />
           </PrivateRoute>
         }
       />

@@ -183,7 +183,7 @@ function BarGraph() {
             ? data
             : data.filter((item) => item.country === selectedCountry);
 
-        console.log("Filtered Data:", filteredData); // Log filtered data
+        // console.log("Filtered Data:", filteredData); // Log filtered data
 
         const calculatedAgeRangeData = ageRanges.map((range) => {
           const [min, max] = range.includes("+")
@@ -194,7 +194,7 @@ function BarGraph() {
             (item) => item.age >= min && item.age <= max
           );
 
-          console.log(`Data for ${range}:`, groupData); // Log group data for each range
+          // console.log(`Data for ${range}:`, groupData); // Log group data for each range
 
           const avgMetric =
             groupData.reduce((sum, item) => sum + item.data, 0) /
@@ -203,7 +203,7 @@ function BarGraph() {
           return { ageRange: range, avgMetric };
         });
 
-        console.log("Calculated Age Range Data:", calculatedAgeRangeData); // Log final calculated data
+        // console.log("Calculated Age Range Data:", calculatedAgeRangeData); // Log final calculated data
 
         setAgeRangeData(calculatedAgeRangeData);
       } else {

@@ -46,8 +46,6 @@ const domainMapping = {
 const LineGraph = ({ data, valueKey }) => {
   const tickFormatter = (tick) => tick.slice(-2);
 
-  console.log("valueKey", valueKey);
-
   return (
     <div className="w-[100%] h-[330px]">
       <ResponsiveContainer>

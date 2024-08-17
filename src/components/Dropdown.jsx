@@ -196,10 +196,8 @@ const Dropdown = ({ options, onOptionSelect, defaultValue, width = 160 }) => {
   };
 
   const handleOptionClick = (option) => {
-    console.log("option", option);
-    setSelectedOption(option);
-    console.log("selectedOption", selectedOption);
     setIsOpen(false);
+    setSelectedOption(option);
     onOptionSelect(option); // Update the parent's state
   };
 
