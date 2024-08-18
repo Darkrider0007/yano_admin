@@ -34,6 +34,7 @@ const Box = ({ checked, onChange }) => {
 };
 
 export default function Notification({ name, handleClose }) {
+  console.log("name", name);
   const {
     register,
     handleSubmit,

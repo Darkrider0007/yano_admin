@@ -30,6 +30,7 @@ import Notification from "@/utils/Notification";
 import CustomCheckBox from "@/components/CustomCheckBox";
 import axios from "axios";
 import { fetchDoctorUserData, fetchPatientUserData } from "@/API/dataFetch";
+import { toggleActive } from "@/API/sendData";
 
 const data = [
   {
@@ -89,12 +90,13 @@ export default function User() {
   const [showSendNotification, setShowSendNotification] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [popupVisible, setPopupVisible] = useState(false);
   const popupRef = useRef(null);
-  // fetch user from api
-  // const baseUrl = import.meta.env.BASE_URL;
-  // Function to fetch data from the first API using Axios
+  const [countryList, setCountryList] = useState([]);
+  const [fixedData, setFixedData] = useState([]);
 
-  const [combinedData, setCombinedData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAndCombineData = async () => {
@@ -114,8 +116,33 @@ export default function User() {
             combinedData.push(patientData[i]);
           }
         }
+        const filteredData = combinedData.filter((user) => {
+          const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+          const matchesSearchQuery =
+            fullName.includes(searchQuery.toLowerCase()) ||
+            user._id.toLowerCase().includes(searchQuery.toLowerCase());
 
-        setCombinedData(combinedData); // Store the combined data in state
+          const matchesTypeFilter =
+            selectedTypes.length === 0 || selectedTypes.includes(user.userType);
+
+          return matchesSearchQuery && matchesTypeFilter;
+        });
+        setFilteredData(filteredData);
+        setFixedData(filteredData);
+        const countryList = [
+          ...new Set(
+            combinedData
+              .map((user) => user.country)
+              .filter((country) => country !== undefined && country !== null)
+          ),
+        ].map((country) => ({ label: country, value: country }));
+
+        const typeList = [
+          ...new Set(combinedData.map((user) => user.userType)),
+        ].map((type) => ({ label: type, value: type }));
+
+        setCountryList(countryList);
+        setType(typeList);
       } catch (error) {
         console.error("Error combining data:", error);
       }
@@ -132,12 +159,6 @@ export default function User() {
     });
   };
 
-  const countryList = [
-    { label: "Mexico", value: "Mexico" },
-    { label: "Brazil", value: "Brazil" },
-    { label: "Venezuela", value: "Venezuela" },
-    { label: "Colombia", value: "Colombia" },
-  ];
   const statusList = [
     { label: "Active", value: "active" },
     { label: "Inactive", value: "inactive" },
@@ -146,20 +167,36 @@ export default function User() {
     { label: "Patient", value: "patient" },
     { label: "Helthcare provider", value: "doctor" },
   ];
-  const handleCountryChange = (option) => {
-    setCountry(option);
-  };
-  const handleStatus = (option) => {
-    setStatus(option);
-  };
-  // const handleType = (option) => {
-  //   setType(option);
-  // };
-  const navigate = useNavigate();
+  const handleCountryChange = (options) => {
+    const selectedCountries = options.map((option) => option.value);
 
-  const handleRowClick = (user) => {
-    navigate(`/user/${user?._id}`, { state: { user } });
-    // console.log(user?.firstName);
+    const users = fixedData.filter((user) =>
+      selectedCountries.includes(user.country)
+    );
+
+    if (users.length === 0) setFilteredData(fixedData);
+    else setFilteredData(users);
+
+    console.log(selectedCountries);
+    console.log(users);
+    setCountry(options);
+  };
+
+  const handleStatus = (option) => {
+    const selectedTypes = option.map((option) => option.value);
+    const statusMap = {
+      active: true,
+      inactive: false,
+    };
+    const users = fixedData.filter((user) =>
+      selectedTypes.includes(user.isActive ? "active" : "inactive")
+    );
+    if (users.length === 0) {
+      setFilteredData(fixedData);
+    } else {
+      setFilteredData(users);
+    }
+    setStatus(option);
   };
 
   const handleActionClick = (event, user) => {
@@ -168,10 +205,17 @@ export default function User() {
       top: rect.bottom + window.scrollY - 3,
       left: rect.left + window.scrollX - 40,
     });
+    setPopupVisible(true);
     setSelectedUser(user);
   };
 
+  const handleRowClick = (user) => {
+    navigate(`/user/${user?._id}`, { state: { user } });
+    // console.log(user?.firstName);
+  };
+
   const closePopup = () => {
+    setPopupVisible(false);
     setSelectedUser(null);
   };
 
@@ -190,7 +234,7 @@ export default function User() {
 
   const handleSendNotificationClick = () => {
     setShowSendNotification(true);
-    setSelectedUser(null);
+    setPopupVisible(null);
   };
   const handleClose = () => {
     setShowSendNotification(false);
@@ -223,21 +267,24 @@ export default function User() {
 
   // Handle type filter change
   const handleTypeChange = (selectedOptions) => {
-    setSelectedTypes(selectedOptions.map((option) => option.value));
+    // Extract the selected types from the options
+    const selectedTypes = selectedOptions.map((option) => option.value);
+
+    // Filter users based on the selected types
+    const users = fixedData.filter((user) =>
+      selectedTypes.includes(user.userType)
+    );
+
+    // If no users match the selected types, use the full list
+    if (users.length === 0) {
+      setFilteredData(fixedData);
+    } else {
+      setFilteredData(users);
+    }
+
+    // Update the state with the selected types
+    setSelectedTypes(selectedTypes);
   };
-
-  // Filter the data based on the search query and selected types
-  const filteredData = combinedData.filter((user) => {
-    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const matchesSearchQuery =
-      fullName.includes(searchQuery.toLowerCase()) ||
-      user._id.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesTypeFilter =
-      selectedTypes.length === 0 || selectedTypes.includes(user.userType);
-
-    return matchesSearchQuery && matchesTypeFilter;
-  });
 
   const CheckOption = () => {
     return (
@@ -272,6 +319,22 @@ export default function User() {
         </div>
       </div>
     );
+  };
+
+  const deactivateUser = async () => {
+    console.log("deactivate user", selectedUser);
+    const updatedUser = await toggleActive(selectedUser._id, {
+      isActive: !selectedUser.isActive,
+    });
+
+    const updatedUsers =
+      updatedUser &&
+      filteredData.map((item) =>
+        item._id == selectedUser._id
+          ? { ...item, isActive: !item.isActive }
+          : item
+      );
+    setFilteredData(updatedUsers);
   };
 
   return (
@@ -543,9 +606,8 @@ export default function User() {
                           {user?.firstName} {user?.lastName}
                         </TableCell>
                         <TableCell className="text-[#455560]">
-                          {/* {user?.country} */}
+                          {user?.country ? user?.country : "-"}
                           {/* {user?.firstName} */}
-                          India
                         </TableCell>
                         <TableCell className="text-[#455560]">
                           {user?.userType}
@@ -554,10 +616,13 @@ export default function User() {
                           {formatDate(user?.createdAt)}
                         </TableCell>
                         <TableCell className="">
-                          <div className="w-[55px] h-[23px] bg-[#E8F7F1] rounded-[4px] text-[#138F5B] p-[8px] flex justify-center items-center">
-                            {/* <p>{user?.status}</p> */}
-                            {/* {user?.firstName} */}
-                            active
+                          <div
+                            className={`w-[55px] h-[23px] rounded-[4px] ${
+                              user?.isActive == true
+                                ? "text-[#138F5B] bg-[#E8F7F1]"
+                                : "text-[#8F1C13] bg-[#F7E8EB] px-8"
+                            }   flex justify-center items-center`}>
+                            <p>{user?.isActive ? "Active" : "Inactive"}</p>
                           </div>
                         </TableCell>
                         <TableCell
@@ -601,7 +666,7 @@ export default function User() {
         </div>
       </div>
 
-      {selectedUser && (
+      {popupVisible && selectedUser && (
         <div
           className="  absolute shadow  bg-white border rounded"
           style={{ top: popupPosition.top, left: popupPosition.left }}
@@ -610,18 +675,21 @@ export default function User() {
             <li
               className=" flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
               onClick={closePopup}>
-              <img
-                src={edit}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-              <p className="text-[#455560] text-[14px]">Edit user</p>
+              <Link
+                to={`/user/editUser/${selectedUser._id}`}
+                state={{ user: selectedUser }}
+                className="flex items-center gap-[10px] cursor-pointer hover:bg-[#F5F5F5]">
+                <img
+                  src={edit}
+                  alt=""
+                  className="w-[16px] h-[16px] object-contain"
+                />
+                <p className="text-[#455560] text-[14px]">Edit user</p>
+              </Link>
             </li>
             <li
               onClick={handleSendNotificationClick}
-              className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              // onClick={closePopup}
-            >
+              className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]">
               <img
                 src={sendnoti}
                 alt=""
@@ -641,7 +709,10 @@ export default function User() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}>
+              onClick={() => {
+                deactivateUser();
+                closePopup();
+              }}>
               <img
                 src={deactivate}
                 alt=""
@@ -652,7 +723,12 @@ export default function User() {
           </ul>
         </div>
       )}
-      {showSendNotification && <Notification handleClose={handleClose} />}
+      {showSendNotification && (
+        <Notification
+          name={`${selectedUser?.firstName} ${selectedUser?.lastName}`}
+          handleClose={handleClose}
+        />
+      )}
     </div>
   );
 }

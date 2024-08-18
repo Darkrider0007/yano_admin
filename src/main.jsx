@@ -33,6 +33,7 @@ import Test from "./pages/Test.jsx";
 import PrivateRoute from "./layout/PrivateRoute.jsx";
 import PublicRoute from "./layout/PublicRoute.jsx";
 import EditAdmin from "./settings/EditAdmin.jsx";
+import EditUser from "./user/EditUser.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -74,6 +75,14 @@ const router = createBrowserRouter(
         element={
           <PrivateRoute>
             <User />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/user/editUser/:userID"
+        element={
+          <PrivateRoute>
+            <EditUser />
           </PrivateRoute>
         }
       />

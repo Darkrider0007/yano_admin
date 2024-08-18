@@ -636,10 +636,13 @@ const Overview = () => {
                 <TableRow
                   key={user?._id}
                   className="cursor-pointer"
-                  onClick={() => handleRowClick(user)}>
+                  // onClick={() => handleRowClick(user)}
+                >
                   <TableCell className="pl-[40px]">{user._id}</TableCell>
                   <TableCell className="text-[#3E79F7]">
-                    {user?.firstName} {user?.lastName}
+                    <Link to={`/user/${user._id}`} state={{ user }}>
+                      {user?.firstName} {user?.lastName}
+                    </Link>
                   </TableCell>
                   <TableCell>{user?.country || "Mexico"}</TableCell>
                   <TableCell>

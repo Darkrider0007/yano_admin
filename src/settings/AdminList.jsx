@@ -140,7 +140,6 @@ function AdminList() {
   const handleSendNotificationClick = () => {
     setShowSendNotification(true);
     setPopupVisible(null);
-    // setSelectedAdmin(false);
   };
 
   useEffect(() => {
