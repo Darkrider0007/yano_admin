@@ -27,6 +27,9 @@ import { fetchDoctorData } from "@/API/dataFetch";
 import { truncateString } from "@/helpers/truncateString";
 import { Permissions } from "@/constant/permissions";
 import { toggleActive } from "@/API/sendData";
+import MyDocument from "@/components/PDF/MyDocument";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import AdminListPDF from "@/components/PDF/AdminListPDF";
 
 function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +84,7 @@ function AdminList() {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [showSendNotification, setShowSendNotification] = useState(false);
+  const [isDownloadComplete, setIsDownloadComplete] = useState(false);
   const popupRef = useRef(null);
 
   const handleThreeDotClick = (event, admin) => {
@@ -140,6 +144,14 @@ function AdminList() {
   const handleSendNotificationClick = () => {
     setShowSendNotification(true);
     setPopupVisible(null);
+  };
+
+  const handleExportReport = () => {
+    setIsDownloadComplete(false);
+    setTimeout(() => {
+      closePopup();
+      setIsDownloadComplete(true);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -373,13 +385,29 @@ function AdminList() {
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
-              onClick={closePopup}>
+              onClick={handleExportReport}>
               <img
                 src={exportreport}
                 alt=""
                 className="w-[16px] h-[16px] object-contain"
               />
-              <p className="text-[#455560] text-[14px]">Export report</p>
+              <PDFDownloadLink
+                document={<AdminListPDF user={selectedAdmin} />}
+                fileName="Yano_report.pdf"
+                onClick={() => {
+                  setIsDownloadComplete(false);
+                  handleExportReport();
+                }}>
+                {({ blob, url, loading, error }) =>
+                  loading ? (
+                    <p className="text-[#455560] text-[14px]">Downloading...</p>
+                  ) : !loading && !error ? (
+                    <p className="text-[#455560] text-[14px]">Export report</p>
+                  ) : error ? (
+                    <p className="text-[#ff0000] text-[14px]">Error...</p>
+                  ) : null
+                }
+              </PDFDownloadLink>
             </li>
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"

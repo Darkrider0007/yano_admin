@@ -31,6 +31,8 @@ import CustomCheckBox from "@/components/CustomCheckBox";
 import axios from "axios";
 import { fetchDoctorUserData, fetchPatientUserData } from "@/API/dataFetch";
 import { toggleActive } from "@/API/sendData";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import MyDocument from "@/components/PDF/MyDocument";
 
 const data = [
   {
@@ -95,6 +97,7 @@ export default function User() {
   const popupRef = useRef(null);
   const [countryList, setCountryList] = useState([]);
   const [fixedData, setFixedData] = useState([]);
+  const [isDownloadComplete, setIsDownloadComplete] = useState(false);
 
   const navigate = useNavigate();
 
@@ -335,6 +338,14 @@ export default function User() {
           : item
       );
     setFilteredData(updatedUsers);
+  };
+
+  const handleExportReport = () => {
+    setIsDownloadComplete(false);
+    setTimeout(() => {
+      closePopup();
+      setIsDownloadComplete(true);
+    }, 2000);
   };
 
   return (
@@ -698,15 +709,32 @@ export default function User() {
               <p className="text-[#455560] text-[14px]">Send notification</p>
             </li>
             <li
-              className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]   "
-              onClick={closePopup}>
+              className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
+              onClick={handleExportReport}>
               <img
                 src={exportreport}
                 alt=""
                 className="w-[16px] h-[16px] object-contain"
               />
-              <p className="text-[#455560] text-[14px]">Export report</p>
+              <PDFDownloadLink
+                document={<MyDocument user={selectedUser} />}
+                fileName="Yano_report.pdf"
+                onClick={() => {
+                  setIsDownloadComplete(false);
+                  handleExportReport();
+                }}>
+                {({ blob, url, loading, error }) =>
+                  loading ? (
+                    <p className="text-[#455560] text-[14px]">Downloading...</p>
+                  ) : !loading && !error ? (
+                    <p className="text-[#455560] text-[14px]">Export report</p>
+                  ) : error ? (
+                    <p className="text-[#ff0000] text-[14px]">Error...</p>
+                  ) : null
+                }
+              </PDFDownloadLink>
             </li>
+
             <li
               className="flex items-center gap-[10px] rounded-[6px] px-[16px] py-[12px] cursor-pointer hover:bg-[#F5F5F5]"
               onClick={() => {
