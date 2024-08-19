@@ -1,3 +1,4 @@
+import { calculateAverage } from "@/helpers/calculateAverage";
 import axios from "axios";
 
 const BaseUrl = "https://yano-backend.onrender.com";
@@ -53,7 +54,7 @@ export const fetchData = async (endpoint) => {
 
 export const fetchUserData = async () => {
   try {
-    const baseUrl = "https://yano-backend.onrender.com/api";
+    const BaseUrl = "https://yano-backend.onrender.com/api";
     const endpoints = {
       bloodPressure: "/blood-pressure",
       bloodGlucose: "/blood-glucose",
@@ -69,11 +70,11 @@ export const fetchUserData = async () => {
       bodyTemperatureResponse,
       heartRateResponse,
     ] = await Promise.all([
-      axios.get(`${baseUrl}${endpoints.bloodPressure}`),
-      axios.get(`${baseUrl}${endpoints.bloodGlucose}`),
-      axios.get(`${baseUrl}${endpoints.oxygenSaturation}`),
-      axios.get(`${baseUrl}${endpoints.bodyTemperature}`),
-      axios.get(`${baseUrl}${endpoints.heartRate}`),
+      axios.get(`${BaseUrl}${endpoints.bloodPressure}`),
+      axios.get(`${BaseUrl}${endpoints.bloodGlucose}`),
+      axios.get(`${BaseUrl}${endpoints.oxygenSaturation}`),
+      axios.get(`${BaseUrl}${endpoints.bodyTemperature}`),
+      axios.get(`${BaseUrl}${endpoints.heartRate}`),
     ]);
 
     const allData = [
@@ -140,3 +141,110 @@ export const fetchUserData = async () => {
     console.log(error);
   }
 };
+
+export async function fetchDataAndCalculateAverage() {
+  const BaseUrl = "https://yano-backend.onrender.com/api";
+
+  // Define the endpoints
+  const endpoints = {
+    bloodPressure: "/blood-pressure",
+    bloodGlucose: "/blood-glucose",
+    oxygenSaturation: "/blood-oxygen",
+    bodyTemperature: "/body-temp",
+    heartRate: "/heart-rate",
+  };
+
+  try {
+    const [
+      bloodPressureResponse,
+      bloodGlucoseResponse,
+      oxygenSaturationResponse,
+      bodyTemperatureResponse,
+      heartRateResponse,
+    ] = await Promise.all([
+      axios.get(`${BaseUrl}${endpoints.bloodPressure}`),
+      axios.get(`${BaseUrl}${endpoints.bloodGlucose}`),
+      axios.get(`${BaseUrl}${endpoints.oxygenSaturation}`),
+      axios.get(`${BaseUrl}${endpoints.bodyTemperature}`),
+      axios.get(`${BaseUrl}${endpoints.heartRate}`),
+    ]);
+
+    // Calculate the average values
+    const bloodPressureData = bloodPressureResponse.data || [];
+    const avgSystolic = calculateAverage(bloodPressureData, "systolic");
+    const avgDiastolic = calculateAverage(bloodPressureData, "diastolic");
+    const bloodPressureUnit = bloodPressureData[0]?.unit || "";
+    const avgBloodPressure = `${avgSystolic.toFixed(
+      0
+    )} - ${avgDiastolic.toFixed(0)}`;
+
+    const avgBloodGlucose = calculateAverage(
+      bloodGlucoseResponse.data || [],
+      "data"
+    );
+    const bloodGlucoseUnit = bloodGlucoseResponse.data[0]?.unit || "";
+    const avgOxygenSaturation = calculateAverage(
+      oxygenSaturationResponse.data || [],
+      "data"
+    );
+    const oxygenSaturationUnit = oxygenSaturationResponse.data[0]?.unit || "";
+    const avgBodyTemperature = calculateAverage(
+      bodyTemperatureResponse.data || [],
+      "data"
+    );
+    const bodyTemperatureUnit = bodyTemperatureResponse.data[0]?.unit || "";
+    const avgHeartRate = calculateAverage(heartRateResponse.data || [], "data");
+    const heartRateUnit = heartRateResponse.data[0]?.unit || "";
+
+    // Construct the data array
+    const newData = [
+      {
+        name: "Blood Pressure",
+        value: avgBloodPressure,
+        unit: bloodPressureUnit,
+        rate: 0, // You can calculate the rate of change if needed
+        parName: "bloodPressure",
+      },
+      {
+        name: "Blood Glucose",
+        value: avgBloodGlucose.toFixed(0),
+        unit: bloodGlucoseUnit,
+        rate: 0,
+        parName: "bloodGlucose",
+      },
+      {
+        name: "Oxygen Saturation",
+        value: avgOxygenSaturation.toFixed(0),
+        unit: oxygenSaturationUnit,
+        rate: 0,
+        parName: "oxygenSat",
+      },
+      {
+        name: "Body Temperature",
+        value: avgBodyTemperature.toFixed(0),
+        unit: bodyTemperatureUnit,
+        rate: 0,
+        parName: "bodytemp",
+      },
+      {
+        name: "Heart Rate",
+        value: avgHeartRate.toFixed(0),
+        unit: heartRateUnit,
+        rate: 0,
+        parName: "heartrate",
+      },
+      {
+        name: "Mood",
+        value: avgDiastolic.toFixed(0),
+        unit: bloodGlucoseUnit,
+        rate: 0,
+        parName: "mood",
+      },
+    ];
+
+    return newData; // Return the newData array
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return []; // Return an empty array in case of error
+  }
+}

@@ -35,60 +35,12 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import axios from "axios";
 import { data } from "autoprefixer";
 import {
+  fetchDataAndCalculateAverage,
   fetchDoctorUserData,
   fetchPatientUserData,
   fetchUserData,
 } from "@/API/dataFetch";
 import LineGraph from "@/components/LineGraph";
-
-const unitMapping = {
-  bloodGlucose: "ml/mol",
-  oxygenSat: "%",
-  bodytemp: "°C",
-  heartrate: "bpm",
-  bp: "mmHg",
-  mood: "",
-};
-
-const domainMapping = {
-  bloodGlucose: [0, 40],
-  oxygenSat: [0, 60],
-  bodytemp: [30, 45],
-  heartrate: [50, 100],
-  bp: [100, 120],
-  mood: [0, 10],
-};
-
-const filteredData2 = [
-  {
-    date: "2024-08-10",
-    bloodPressure: 105,
-    bloodGlucose: 76,
-    oxygenSat: 95,
-    bodytemp: 36,
-    heartrate: 68,
-    mood: 78,
-  },
-  {
-    date: "2024-08-11",
-    bloodPressure: 100,
-    bloodGlucose: 78,
-    oxygenSat: 96,
-    bodytemp: 37,
-    heartrate: 70,
-    mood: 80,
-  },
-  {
-    date: "2024-08-12",
-    bloodPressure: 90,
-    bloodGlucose: 77,
-    oxygenSat: 94,
-    bodytemp: 36.5,
-    heartrate: 67,
-    mood: 79,
-  },
-  // Add more data points as needed
-];
 
 const Overview = () => {
   const [country, setCountry] = useState("All Countries");
@@ -200,137 +152,6 @@ const Overview = () => {
   };
 
   const [data, setData] = useState([]);
-  // Function to fetch and calculate the average
-  async function fetchDataAndCalculateAverage() {
-    const baseUrl = "https://yano-backend.onrender.com/api";
-
-    // Helper function to calculate average of a specific metric
-    const calculateAverage = (data, key) => {
-      if (!data || data.length === 0) {
-        return 0; // Return 0 or some default value if no data is found
-      }
-
-      const filteredData = data.filter((entry) => {
-        const entryDate = new Date(entry.createdAt);
-        const today = new Date();
-        const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
-        return entryDate >= thirtyDaysAgo;
-      });
-
-      if (filteredData.length === 0) {
-        return 0; // Return 0 if no data in the last 30 days
-      }
-
-      const sum = filteredData.reduce((total, item) => total + item[key], 0);
-      return sum / filteredData.length || 0;
-    };
-
-    // Fetch data from each endpoint
-    const endpoints = {
-      bloodPressure: "/blood-pressure",
-      bloodGlucose: "/blood-glucose",
-      oxygenSaturation: "/blood-oxygen",
-      bodyTemperature: "/body-temp",
-      heartRate: "/heart-rate",
-    };
-
-    try {
-      const [
-        bloodPressureResponse,
-        bloodGlucoseResponse,
-        oxygenSaturationResponse,
-        bodyTemperatureResponse,
-        heartRateResponse,
-      ] = await Promise.all([
-        axios.get(`${baseUrl}${endpoints.bloodPressure}`),
-        axios.get(`${baseUrl}${endpoints.bloodGlucose}`),
-        axios.get(`${baseUrl}${endpoints.oxygenSaturation}`),
-        axios.get(`${baseUrl}${endpoints.bodyTemperature}`),
-        axios.get(`${baseUrl}${endpoints.heartRate}`),
-      ]);
-
-      // Calculate the average values
-      const bloodPressureData = bloodPressureResponse.data || [];
-      const avgSystolic = calculateAverage(bloodPressureData, "systolic");
-      const avgDiastolic = calculateAverage(bloodPressureData, "diastolic");
-      const bloodPressureUnit = bloodPressureData[0]?.unit || "";
-      const avgBloodPressure = `${avgSystolic.toFixed(
-        0
-      )} - ${avgDiastolic.toFixed(0)}`;
-
-      const avgBloodGlucose = calculateAverage(
-        bloodGlucoseResponse.data || [],
-        "data"
-      );
-      const bloodGlucoseUnit = bloodGlucoseResponse.data[0]?.unit || "";
-      const avgOxygenSaturation = calculateAverage(
-        oxygenSaturationResponse.data || [],
-        "data"
-      );
-      const oxygenSaturationUnit = oxygenSaturationResponse.data[0]?.unit || "";
-      const avgBodyTemperature = calculateAverage(
-        bodyTemperatureResponse.data || [],
-        "data"
-      );
-      const bodyTemperatureUnit = bodyTemperatureResponse.data[0]?.unit || "";
-
-      const avgHeartRate = calculateAverage(
-        heartRateResponse.data || [],
-        "data"
-      );
-      const heartRateUnit = heartRateResponse.data[0]?.unit || "";
-      // Construct the data array
-      const newData = [
-        {
-          name: "Blood Pressure",
-          value: avgBloodPressure,
-          unit: bloodPressureUnit,
-          rate: 0, // You can calculate the rate of change if needed
-          parName: "bloodPressure",
-        },
-        {
-          name: "Blood Glucose",
-          value: avgBloodGlucose.toFixed(0),
-          unit: bloodGlucoseUnit,
-          rate: 0,
-          parName: "bloodGlucose",
-        },
-        {
-          name: "Oxygen Saturation",
-          value: avgOxygenSaturation.toFixed(0),
-          unit: oxygenSaturationUnit,
-          rate: 0,
-          parName: "oxygenSat",
-        },
-        {
-          name: "Body Temperature",
-          value: avgBodyTemperature.toFixed(0),
-          unit: bodyTemperatureUnit,
-          rate: 0,
-          parName: "bodytemp",
-        },
-        {
-          name: "Heart Rate",
-          value: avgHeartRate.toFixed(0),
-          unit: heartRateUnit,
-          rate: 0,
-          parName: "heartrate",
-        },
-        {
-          name: "Mood",
-          value: avgDiastolic.toFixed(0),
-          unit: bloodGlucoseUnit,
-          rate: 0,
-          parName: "mood",
-        },
-      ];
-
-      setData(newData); // Save the newData array in state
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]); // Set to an empty array in case of error
-    }
-  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -340,6 +161,15 @@ const Overview = () => {
 
     return formattedDate;
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      const result = await fetchDataAndCalculateAverage();
+      setData(result);
+    }
+
+    fetchData();
+  }, []);
 
   // Fetch data when the component mounts
   useEffect(() => {
