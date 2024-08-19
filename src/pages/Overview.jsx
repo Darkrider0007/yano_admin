@@ -40,6 +40,7 @@ const Overview = () => {
   const [top5Users, setTop5Users] = useState([]);
   const [user, setUser] = useState([]);
   const [filteredData1, setFilteredData1] = useState([]);
+  const [filteredData2, setFilteredData2] = useState([]);
   const [data, setData] = useState([]);
 
   const handleClick = (index, parName) => {
@@ -66,8 +67,19 @@ const Overview = () => {
     setCountry(option.value);
   };
 
-  const handleDayChange = (option) => {
-    setDays(parseInt(option.value));
+  const handleDayChange = (selectedOption) => {
+    const daysToFilter = parseInt(selectedOption.value, 10);
+
+    const today = new Date();
+    const filteredData = filteredData2.filter((item) => {
+      const itemDate = new Date(item.date);
+      const differenceInDays = Math.floor(
+        (today - itemDate) / (900 * 60 * 60 * 24)
+      );
+      return differenceInDays <= daysToFilter;
+    });
+
+    setFilteredData1(filteredData);
   };
 
   const formatDate = (dateString) => {
@@ -140,6 +152,8 @@ const Overview = () => {
         // Fetch user data and set it
         const userData = await fetchUserData();
         setFilteredData1(userData);
+        setFilteredData2(userData);
+        console.log(userData);
 
         // Fetch data and calculate averages, then set it
         const calculatedData = await fetchDataAndCalculateAverage();

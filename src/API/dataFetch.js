@@ -77,6 +77,7 @@ export const fetchUserData = async () => {
       axios.get(`${BaseURL}${endpoints.heartRate}`),
     ]);
 
+    // Combine all the data from different endpoints into one array
     const allData = [
       ...bloodPressureResponse.data,
       ...bloodGlucoseResponse.data,
@@ -98,35 +99,39 @@ export const fetchUserData = async () => {
     const groupedData = {};
 
     allData.forEach((entry) => {
-      const date = new Date(entry.createdAt).toISOString().split("T")[0];
+      try {
+        const date = new Date(entry.createdAt).toISOString().split("T")[0];
 
-      if (!groupedData[date]) {
-        groupedData[date] = {
-          date: date,
-          bloodPressure: null,
-          bloodGlucose: null,
-          oxygenSat: null,
-          bodytemp: null,
-          heartrate: null,
-          mood: null,
-        };
-      }
-
-      if (entry.systolic && entry.diastolic) {
-        // Handle blood pressure
-        groupedData[date].bloodPressure = calculateAverage(
-          `${entry.systolic}-${entry.diastolic}`
-        );
-      } else if (entry.data) {
-        if (entry.unit === "mmol/L") {
-          groupedData[date].bloodGlucose = calculateAverage(entry.data);
-        } else if (entry.unit === "%") {
-          groupedData[date].oxygenSat = calculateAverage(entry.data);
-        } else if (entry.unit === "°C") {
-          groupedData[date].bodytemp = calculateAverage(entry.data);
-        } else if (entry.unit === "bpm") {
-          groupedData[date].heartrate = calculateAverage(entry.data);
+        if (!groupedData[date]) {
+          groupedData[date] = {
+            date: date,
+            bloodPressure: null,
+            bloodGlucose: null,
+            oxygenSat: null,
+            bodytemp: null,
+            heartrate: null,
+            mood: null,
+          };
         }
+
+        if (entry.systolic != null && entry.diastolic != null) {
+          // Handle blood pressure
+          groupedData[date].bloodPressure = calculateAverage(
+            `${entry.systolic}-${entry.diastolic}`
+          );
+        } else if (entry.data != null) {
+          if (entry.unit === "mmol/L") {
+            groupedData[date].bloodGlucose = calculateAverage(entry.data);
+          } else if (entry.unit === "%") {
+            groupedData[date].oxygenSat = calculateAverage(entry.data);
+          } else if (entry.unit === "°C") {
+            groupedData[date].bodytemp = calculateAverage(entry.data);
+          } else if (entry.unit === "bpm") {
+            groupedData[date].heartrate = calculateAverage(entry.data);
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing entry ${entry._id}:`, error);
       }
     });
 
@@ -138,7 +143,8 @@ export const fetchUserData = async () => {
 
     return transformedData;
   } catch (error) {
-    console.log(error);
+    console.log("Error fetching or processing data:", error);
+    return undefined; // Return undefined if there's an error
   }
 };
 
