@@ -5,15 +5,6 @@ import { MdOutlinePeopleOutline } from "react-icons/md";
 import { IoMdLink } from "react-icons/io";
 import { RxDashboard } from "react-icons/rx";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
-import {
   TableHead,
   TableRow,
   TableHeader,
@@ -32,8 +23,6 @@ import uparr from "../assets/icons/uparr.png";
 import downgray from "../assets/icons/downgray.png";
 import Sidebar from "@/components/Sidebar";
 import { FaArrowRightLong } from "react-icons/fa6";
-import axios from "axios";
-import { data } from "autoprefixer";
 import {
   fetchDataAndCalculateAverage,
   fetchDoctorUserData,
@@ -51,6 +40,7 @@ const Overview = () => {
   const [top5Users, setTop5Users] = useState([]);
   const [user, setUser] = useState([]);
   const [filteredData1, setFilteredData1] = useState([]);
+  const [data, setData] = useState([]);
 
   const handleClick = (index, parName) => {
     setActiveIndex(index);
@@ -150,8 +140,6 @@ const Overview = () => {
   const handleDayChange = (option) => {
     setDays(parseInt(option.value));
   };
-
-  const [data, setData] = useState([]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
