@@ -1,6 +1,5 @@
 import Sidebar from "@/components/Sidebar";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { IoMdArrowBack } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import {
   TableHead,
@@ -27,7 +26,6 @@ import { fetchDoctorData } from "@/API/dataFetch";
 import { truncateString } from "@/helpers/truncateString";
 import { Permissions } from "@/constant/permissions";
 import { toggleActive } from "@/API/sendData";
-import MyDocument from "@/components/PDF/MyDocument";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AdminListPDF from "@/components/PDF/AdminListPDF";
 
@@ -35,6 +33,13 @@ function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState(null);
   const [admin, setAdmin] = useState([]);
+  // three dot action functions
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [showSendNotification, setShowSendNotification] = useState(false);
+  const [isDownloadComplete, setIsDownloadComplete] = useState(false);
+  const popupRef = useRef(null);
 
   const filteredAdmins = useMemo(() => {
     return admin.filter(
@@ -76,16 +81,8 @@ function AdminList() {
   const navigate = useNavigate();
 
   const handleRowClick = (user) => {
-    navigate("/settings/adminList/createAdmin");
+    navigate(`/user/${selectedAdmin?.id}`, { state: { selectedAdmin } });
   };
-
-  // three dot action functions
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-  const [selectedAdmin, setSelectedAdmin] = useState(null);
-  const [showSendNotification, setShowSendNotification] = useState(false);
-  const [isDownloadComplete, setIsDownloadComplete] = useState(false);
-  const popupRef = useRef(null);
 
   const handleThreeDotClick = (event, admin) => {
     const rect = event.target.getBoundingClientRect();
@@ -124,19 +121,6 @@ function AdminList() {
     setAdmin(updatedAdmins);
   };
 
-  const handleClickOutside = (event) => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) {
-      closePopup();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const handleClose = () => {
     setShowSendNotification(false);
   };
@@ -155,26 +139,44 @@ function AdminList() {
   };
 
   useEffect(() => {
-    const fetchAdmins = async () => {
-      const response = await fetchDoctorData();
-      const transformedData = response.map((item) => ({
-        id: item._id,
-        full_name: `${item.firstName} ${item.lastName}`,
-        permission: Object.keys(item.permission)
-          .filter((key) => item.permission[key])
-          .map((key) => Permissions[key])
-          .join(", "),
-        date_of_creation: new Date(item.createdAt).toLocaleDateString(),
-        status: item.isActive ? "active" : "inactive",
-        firstName: item.firstName,
-        lastName: item.lastName,
-        email: item.email,
-        password: item.password,
-        permissions: item.permission,
-      }));
-      setAdmin(transformedData);
+    // Event listener for detecting clicks outside
+    const handleClickOutside = (event) => {
+      // Your logic to handle the click outside
     };
-    fetchAdmins();
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Function to fetch and transform admin data
+    const fetchAdmins = async () => {
+      try {
+        const response = await fetchDoctorData();
+        const transformedData = response.map((item) => ({
+          id: item._id,
+          full_name: `${item.firstName} ${item.lastName}`,
+          permission: Object.keys(item.permission)
+            .filter((key) => item.permission[key])
+            .map((key) => Permissions[key])
+            .join(", "),
+          date_of_creation: new Date(item.createdAt).toLocaleDateString(),
+          status: item.isActive ? "active" : "inactive",
+          firstName: item.firstName,
+          lastName: item.lastName,
+          email: item.email,
+          password: item.password,
+          permissions: item.permission,
+        }));
+        setAdmin(transformedData);
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+      }
+    };
+
+    fetchAdmins(); // Fetch admins when the component mounts
+
+    // Cleanup function to remove the event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
@@ -300,9 +302,11 @@ function AdminList() {
                     </div>
                   </TableCell>
                   <TableCell
-                    onClick={handleRowClick}
+                    // onClick={handleRowClick}
                     className="text-[#3E79F7] cursor-pointer">
-                    {admin?.full_name}
+                    <Link to={`/user/${admin?.id}`} state={{ admin }}>
+                      {admin?.full_name}
+                    </Link>
                   </TableCell>
                   <TableCell className="text-[#455560]">
                     {truncateString(admin?.permission, 30)}

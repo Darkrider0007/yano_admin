@@ -47,15 +47,37 @@ const Overview = () => {
     setValueKey(parName);
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      const res = await fetchUserData();
-      setFilteredData1(res);
-      // console.log("res", res);
-    };
+  const options1 = [
+    { label: "Today", value: "0" },
+    { label: "Yesterday", value: "1" },
+    { label: "Last 7 days", value: "7" },
+    { label: "Last 28 days", value: "28" },
+    { label: "Last 90 days", value: "90" },
+  ];
 
-    getData();
-  }, []); // add an empty dependency array to run the effect only once
+  const options2 = [
+    { label: "All countries", value: "All Countries" },
+    { label: "Mexico", value: "Mexico" },
+    { label: "Brazil", value: "Brazil" },
+    { label: "Venezuela", value: "Venezuela" },
+  ];
+
+  const handleCountryChange = (option) => {
+    setCountry(option.value);
+  };
+
+  const handleDayChange = (option) => {
+    setDays(parseInt(option.value));
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Format the date to YYYY-MM-DD
+    const formattedDate = date.toISOString().split("T")[0];
+
+    return formattedDate;
+  };
 
   useEffect(() => {
     let filtered = initialData;
@@ -112,61 +134,18 @@ const Overview = () => {
     setFilteredData(filteredByDate);
   }, [country, days]);
 
-  const navigate = useNavigate();
-
-  const handleRowClick = (user) => {
-    navigate(`/user/${user?.userID}`, { state: { user } });
-  };
-
-  const options1 = [
-    { label: "Today", value: "0" },
-    { label: "Yesterday", value: "1" },
-    { label: "Last 7 days", value: "7" },
-    { label: "Last 28 days", value: "28" },
-    { label: "Last 90 days", value: "90" },
-  ];
-
-  const options2 = [
-    { label: "All countries", value: "All Countries" },
-    { label: "Mexico", value: "Mexico" },
-    { label: "Brazil", value: "Brazil" },
-    { label: "Venezuela", value: "Venezuela" },
-  ];
-
-  const handleCountryChange = (option) => {
-    setCountry(option.value);
-  };
-
-  const handleDayChange = (option) => {
-    setDays(parseInt(option.value));
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-
-    // Format the date to YYYY-MM-DD
-    const formattedDate = date.toISOString().split("T")[0];
-
-    return formattedDate;
-  };
-
   useEffect(() => {
-    async function fetchData() {
-      const result = await fetchDataAndCalculateAverage();
-      setData(result);
-    }
-
-    fetchData();
-  }, []);
-
-  // Fetch data when the component mounts
-  useEffect(() => {
-    fetchDataAndCalculateAverage();
-  }, []);
-
-  useEffect(() => {
-    const fetchAndCombineData = async () => {
+    const fetchAllData = async () => {
       try {
+        // Fetch user data and set it
+        const userData = await fetchUserData();
+        setFilteredData1(userData);
+
+        // Fetch data and calculate averages, then set it
+        const calculatedData = await fetchDataAndCalculateAverage();
+        setData(calculatedData);
+
+        // Fetch doctor and patient data, then combine and set top 5 users
         const doctorData = await fetchDoctorUserData();
         const patientData = await fetchPatientUserData();
 
@@ -184,17 +163,18 @@ const Overview = () => {
         }
 
         setUser(combinedData);
+
         const top5Users = combinedData
-          .sort((a, b) => b.sessions - a.sessions) // Sort by sessions in descending order
+          .sort((a, b) => b.sessions - a.sessions)
           .slice(0, 5);
 
-        setTop5Users(top5Users); // Store the combined data in state
+        setTop5Users(top5Users);
       } catch (error) {
-        console.error("Error combining data:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchAndCombineData(); // Call the function to fetch and combine data
+    fetchAllData();
   }, []);
 
   return (

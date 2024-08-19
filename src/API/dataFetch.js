@@ -54,7 +54,7 @@ export const fetchData = async (endpoint) => {
 
 export const fetchUserData = async () => {
   try {
-    const BaseUrl = "https://yano-backend.onrender.com/api";
+    const BaseURL = BaseUrl + "/api";
     const endpoints = {
       bloodPressure: "/blood-pressure",
       bloodGlucose: "/blood-glucose",
@@ -70,11 +70,11 @@ export const fetchUserData = async () => {
       bodyTemperatureResponse,
       heartRateResponse,
     ] = await Promise.all([
-      axios.get(`${BaseUrl}${endpoints.bloodPressure}`),
-      axios.get(`${BaseUrl}${endpoints.bloodGlucose}`),
-      axios.get(`${BaseUrl}${endpoints.oxygenSaturation}`),
-      axios.get(`${BaseUrl}${endpoints.bodyTemperature}`),
-      axios.get(`${BaseUrl}${endpoints.heartRate}`),
+      axios.get(`${BaseURL}${endpoints.bloodPressure}`),
+      axios.get(`${BaseURL}${endpoints.bloodGlucose}`),
+      axios.get(`${BaseURL}${endpoints.oxygenSaturation}`),
+      axios.get(`${BaseURL}${endpoints.bodyTemperature}`),
+      axios.get(`${BaseURL}${endpoints.heartRate}`),
     ]);
 
     const allData = [
@@ -143,8 +143,7 @@ export const fetchUserData = async () => {
 };
 
 export async function fetchDataAndCalculateAverage() {
-  const BaseUrl = "https://yano-backend.onrender.com/api";
-
+  const BaseURL = BaseUrl + "/api";
   // Define the endpoints
   const endpoints = {
     bloodPressure: "/blood-pressure",
@@ -162,11 +161,11 @@ export async function fetchDataAndCalculateAverage() {
       bodyTemperatureResponse,
       heartRateResponse,
     ] = await Promise.all([
-      axios.get(`${BaseUrl}${endpoints.bloodPressure}`),
-      axios.get(`${BaseUrl}${endpoints.bloodGlucose}`),
-      axios.get(`${BaseUrl}${endpoints.oxygenSaturation}`),
-      axios.get(`${BaseUrl}${endpoints.bodyTemperature}`),
-      axios.get(`${BaseUrl}${endpoints.heartRate}`),
+      axios.get(`${BaseURL}${endpoints.bloodPressure}`),
+      axios.get(`${BaseURL}${endpoints.bloodGlucose}`),
+      axios.get(`${BaseURL}${endpoints.oxygenSaturation}`),
+      axios.get(`${BaseURL}${endpoints.bodyTemperature}`),
+      axios.get(`${BaseURL}${endpoints.heartRate}`),
     ]);
 
     // Calculate the average values
