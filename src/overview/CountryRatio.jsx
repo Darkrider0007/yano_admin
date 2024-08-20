@@ -133,8 +133,8 @@ function CountryRatio({ data }) {
           ))}
         </ul>
       </div>
-      <div className="w-full flex items-start justify-start border-t-2 pt-[15px] absolute bottom-[15px]">
-        <div className="pl-[20px]">
+      <div className="flex items-start justify-start pl-[20px] w-full pt-[11px] absolute border-t-2 border-[#eee]  bottom-[15px]">
+        <div className="w-full flex-1 flex items-center">
           <Dropdown
             width={190}
             options={options1}
@@ -143,6 +143,16 @@ function CountryRatio({ data }) {
           />
         </div>
       </div>
+      {/* <div className="w-full flex items-start justify-start border-t-2 pt-[15px] absolute bottom-[15px]">
+        <div className="pl-[20px]">
+          <Dropdown
+            width={190}
+            options={options1}
+            onOptionSelect={handleDayChange}
+            defaultValue="7"
+          />
+        </div>
+      </div> */}
     </div>
   );
 }

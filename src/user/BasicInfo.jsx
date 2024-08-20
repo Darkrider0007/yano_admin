@@ -202,9 +202,10 @@ function BasicInfo() {
               className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
-            <div className="flex items-center justify-between w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
+            <div className="flex items-center justify-between border-y-2 border-[#E7ECF2] w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
               <input
-                className="w-full h-[49px] shadow-none outline-none pl-2 bg-[#FAFAFA] border-none"
+                // className="w-full h-[49px] shadow-sm outline-none pl-2 bg-[#FAFAFA] border-none"
+                className="w-full h-[49px] shadow-none border-y-2 outline-none pl-2 bg-[#FAFAFA] rounded-[8px]"
                 type="text"
                 id="dob"
                 name="dob"
