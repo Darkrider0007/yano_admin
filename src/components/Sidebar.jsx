@@ -45,8 +45,7 @@ function Sidebar() {
                       : "text-[#455560]"
                   }`
                 }
-                to={item.navigate}
-              >
+                to={item.navigate}>
                 {({ isActive }) => (
                   <>
                     <img
@@ -68,15 +67,14 @@ function Sidebar() {
                     : "text-[#455560]"
                 }`
               }
-              to="/Settings"
-            >
+              to="/Settings">
               {({ isActive }) => (
                 <>
                   <img
                     className="w-[18px] h-[18px] object-contain"
                     src={isActive ? settings : settingsgray}
                   />
-                  settings
+                  Settings
                 </>
               )}
             </NavLink>

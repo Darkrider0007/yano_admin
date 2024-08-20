@@ -199,7 +199,7 @@ const Overview = () => {
           Overview
         </h1>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-[16px]">
-          <div className="rounded-[8px] bg-white shadow-lg p-[16px]">
+          <div className="rounded-[8px] bg-white p-[16px]">
             <div className="flex flex-row items-center justify-between pb-[10px]">
               <p className="text-[16px] font-medium text-[#00263E]">
                 New Users
@@ -223,7 +223,7 @@ const Overview = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-[8px] bg-white shadow-lg p-[16px]">
+          <div className="rounded-[8px] bg-white p-[16px]">
             <div className="flex flex-row items-center justify-between pb-[10px]">
               <p className="text-[16px] font-medium text-[#00263E]">
                 Active users
@@ -247,7 +247,7 @@ const Overview = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-[8px] bg-white shadow-lg p-[16px]">
+          <div className="rounded-[8px] bg-white  p-[16px]">
             <div className="flex flex-row items-center justify-between pb-[10px]">
               <p className="text-[16px] font-medium text-[#00263E]">
                 Most used function
@@ -273,7 +273,7 @@ const Overview = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-[8px] bg-white shadow-lg p-[16px]">
+          <div className="rounded-[8px] bg-white p-[16px]">
             <div className="flex flex-row items-center justify-between pb-[10px]">
               <p className="text-[16px] font-medium text-[#00263E]">
                 Devices connected
@@ -364,7 +364,7 @@ const Overview = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between  flex-wrap ">
+        <div className="flex items-center justify-between gap-2  flex-wrap ">
           <BarGraph />
           <SexRatio data={user} />
           <CountryRatio data={user} />
