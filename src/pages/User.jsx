@@ -428,10 +428,10 @@ export default function User() {
                       <CheckOption />
                     </div>
                   ) : (
-                    <form className="p-[16px] flex justify-between items-center">
-                      <div
-                        className={`flex items-center border rounded-[8px]  bg-[#fafafa] h-[40px] px-2 ${
-                          filter ? "w-1/4" : "w-1/3"
+                    <form className="p-[16px] flex flex-wrap justify-between items-center">
+                      {/* <div
+                        className={`flex items-center border rounded-[8px] bg-[#fafafa] h-[40px] px-2 ${
+                          filter ? "w-full md:w-1/4" : "w-full md:w-1/3"
                         }`}>
                         <img src={search} alt="" />
                         <input
@@ -441,25 +441,51 @@ export default function User() {
                           value={searchQuery}
                           onChange={handleSearchChange}
                         />
-                      </div>
-                      <div className="flex-1 flex justify-end items-center">
+                      </div> */}
+                      <div className="flex-1 flex justify-end items-center mt-4 md:mt-0">
                         {filter === false ? (
-                          <Link
-                            onClick={() => {
-                              setFilter(true);
-                            }}
-                            className="flex items-center flex-wrap gap-[8px] border-2 px-[12px] py-[8px] rounded-[8px]">
-                            <img
-                              src={filterimg}
-                              alt=""
-                              className="w-[16px] h-[16px] object-contain"
-                            />
-                            <p className="text-[#455560] font-medium">
-                              Add filter
-                            </p>
-                          </Link>
+                          <div className="w-full flex flex-wrap justify-between items-center">
+                            <div
+                              className={`flex items-center border rounded-[8px] bg-[#fafafa] h-[40px] px-2 ${
+                                filter ? "w-full md:w-1/4" : "w-full md:w-1/3"
+                              }`}>
+                              <img src={search} alt="" />
+                              <input
+                                className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A]"
+                                placeholder="Search for users ..."
+                                type="search"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                              />
+                            </div>
+                            <Link
+                              onClick={() => {
+                                setFilter(true);
+                              }}
+                              className="flex items-center flex-wrap gap-[8px] border-2 px-[12px] py-[8px] rounded-[8px]">
+                              <img
+                                src={filterimg}
+                                alt=""
+                                className="w-[16px] h-[16px] object-contain"
+                              />
+                              <p className="text-[#455560] font-medium">
+                                Add filter
+                              </p>
+                            </Link>
+                          </div>
                         ) : (
-                          <div className="flex gap-[24px]">
+                          <div className="flex flex-wrap gap-[24px] w-full">
+                            <div
+                              className={`flex items-center border rounded-[8px] bg-[#fafafa] h-[40px] px-2 w-full md:w-1/3 lg:w-fit`}>
+                              <img src={search} alt="" />
+                              <input
+                                className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A]"
+                                placeholder="Search for users ..."
+                                type="search"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                              />
+                            </div>
                             <FilterDropdown
                               width={180}
                               options={statusList}
@@ -472,7 +498,6 @@ export default function User() {
                               onOptionSelect={handleCountryChange}
                               name="country"
                             />
-
                             <FilterDropdown
                               options={typeList}
                               onOptionSelect={handleTypeChange}
@@ -493,24 +518,20 @@ export default function User() {
                                 className="w-[16px] h-[16px]"
                               />
                             </Link>
-                            {}
-                            {showCalender ? (
-                              <div className="bg-[#fafafa]  absolute right-[80px] bottom-[80px] z-50">
+                            {showCalender && (
+                              <div className="bg-[#fafafa] absolute right-[80px] bottom-[80px] z-50">
                                 <CalenderTwoSide
                                   handleSetDate={() => {
                                     setShowCalender(false);
                                   }}
                                 />
                               </div>
-                            ) : (
-                              ""
                             )}
-
                             <Link
                               onClick={() => {
                                 setFilter(false);
                               }}
-                              className="flex items-center justify-center px-[12px] py-[8px] border-2 rounded-[6px] bg-[#fff]">
+                              className="flex items-center justify-center px-[12px] py-[8px] border-2 rounded-[6px] bg-[#fff] ml-auto">
                               <img src={close} alt="" />
                             </Link>
                           </div>

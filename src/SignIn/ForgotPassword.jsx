@@ -32,8 +32,7 @@ function ForgotPassword() {
           <div
             className={`flex items-center h-[49px] border ${
               isEmailError ? "border-red-500" : "border-[#DADCE0]"
-            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}
-          >
+            } bg-[#fafafa] px-[16px] py-[16px] rounded-[8px] focus-within:border-green-500`}>
             <MdOutlineMail />
             <input
               type="email"
@@ -57,12 +56,11 @@ function ForgotPassword() {
           </div>
           <button
             type="submit"
-            className=" w-[100%] h-[50px] bg-[#00263E] text-[#fff] rounded-[8px] mt-[10px] font-[500] "
-          >
+            className=" w-[100%] h-[50px] bg-[#00263E] text-[#fff] rounded-[8px] mt-[10px] font-[500] ">
             Send instructions
           </button>
           <Link to="/">
-            <p className=" text-[#00263E] text-center mt-[10px] underline">
+            <p className=" text-[#00263E] text-center mt-[10px] mb-[20px] underline">
               Back to log in
             </p>
           </Link>

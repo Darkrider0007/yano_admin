@@ -73,8 +73,9 @@ const UserDetail = () => {
           <img
             src={user?.userImg?.secure_url || person}
             alt=""
-            className="w-[80px] h-[80px] rounded-[50%] border"
+            className="w-[80px] h-[80px] rounded-[50%] border object-cover"
           />
+
           <div className="border mx-[24px]" />
           <div className="flex-1 ">
             <h1 className="text-[24px] text-darkblue font-[700] mb-[16px] ">

@@ -204,7 +204,7 @@ function BasicInfo() {
             </label>
             <div className="flex items-center justify-between w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
               <input
-                className="w-full h-[49px] shadow-none border outline-none pl-2 bg-[#FAFAFA] rounded-[8px]"
+                className="w-full h-[49px] shadow-none outline-none pl-2 bg-[#FAFAFA] border-none"
                 type="text"
                 id="dob"
                 name="dob"

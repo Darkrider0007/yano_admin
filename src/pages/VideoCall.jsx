@@ -185,9 +185,10 @@ function VideoCall() {
       {/* main video section */}
       <div className="">
         <div className="relative w-[800px] h-[500px]">
-          <div className="w-full h-full">
+          <div className="w-full h-full rounded-t-[8px] overflow-hidden">
             <img src={patient} alt="" className="w-full h-full object-cover" />
           </div>
+
           <div className="absolute top-0 left-0 bg-[#21212166] rounded-[6px] flex items-center gap-2 m-2 p-[4px]">
             <BsClock color="white" />
             <p className="text-[#fff] text-[12px]">1:12:30</p>
@@ -196,11 +197,16 @@ function VideoCall() {
             <img src={thumnail} alt="" />
           </div>
         </div>
-        <div className="flex justify-between p-[15px] border-b-2 border-x-2 rounded-b-[8px]  ">
+        <div
+          className="flex justify-between p-[15px]"
+          style={{
+            borderBottomWidth: "1.5px",
+            borderLeftWidth: "1.5px",
+            borderRightWidth: "1.5px",
+          }}>
           <Link
             onClick={() => handleLinkClick("queue")}
-            className="flex flex-col items-center"
-          >
+            className="flex flex-col items-center">
             <div className="w-[40px] h-[40px] rounded-[50%] border-2 border-[#EEE] flex justify-center items-center">
               {/* <BiSolidUserDetail
                 color={activeLink === "queue" ? "#0F8D47" : ""}
@@ -225,8 +231,7 @@ function VideoCall() {
           <div className="flex gap-[17px]">
             <Link
               //   onClick={() => handleLinkClick("video")}
-              className=" flex flex-col items-center"
-            >
+              className=" flex flex-col items-center">
               <div className="w-[40px] h-[40px] rounded-[50%] border-2 border-[#EEE] flex justify-center items-center">
                 <img
                   src={videocall3}
@@ -235,7 +240,7 @@ function VideoCall() {
                 />
               </div>
 
-              <p className="text-[12px] text-[#00263E]">video</p>
+              <p className="text-[12px] text-[#00263E]">Video</p>
             </Link>
             <Link className="flex flex-col items-center">
               <div className="w-[40px] h-[40px] rounded-[50%] border-2 border-[#EEE] flex justify-center items-center">
@@ -251,8 +256,7 @@ function VideoCall() {
             </Link>
             <Link
               onClick={() => handleLinkClick("chat")}
-              className="flex flex-col items-center"
-            >
+              className="flex flex-col items-center">
               <div className="w-[40px] h-[40px] rounded-[50%] border-2 border-[#EEE] flex justify-center items-center">
                 {activeLink === "chat" ? (
                   <img
@@ -273,8 +277,7 @@ function VideoCall() {
             </Link>
             <Link
               onClick={() => handleLinkClick("tools")}
-              className="flex flex-col items-center"
-            >
+              className="flex flex-col items-center">
               <div className="w-[40px] h-[40px] rounded-[50%] border-2 border-[#EEE] flex justify-center items-center">
                 {/* <MdOutlineMonitorHeart
                   color={activeLink === "tools" ? "#0F8D47" : ""}
@@ -318,7 +321,7 @@ function VideoCall() {
                 />
               </div>
 
-              <p className="text-[12px] text-[#00263E]">prescription</p>
+              <p className="text-[12px] text-[#00263E]">Prescription</p>
             </Link>
           </div>
           <div className="flex flex-col items-center                                                                                                                                                                                                                                        ">
@@ -332,8 +335,7 @@ function VideoCall() {
       <div className="">
         {activeLink === null && (
           <div
-            className={`h-[550px] p-[16px] bg-[#fff] w-[343px] rounded-[8px] `}
-          >
+            className={`h-[550px] p-[16px] bg-[#fff] w-[343px] rounded-[8px] `}>
             <div className="flex  justify-between">
               <img
                 src={patient}
@@ -344,7 +346,7 @@ function VideoCall() {
                 <IoClose size={25} />
               </Link>
             </div>
-            <div className="border-b-2 p-[16px]">
+            <div className="border-b-2 py-[16px]">
               <p className="text-[18px] text-[#00263E] font-[600]">
                 Wade Warren
               </p>
@@ -384,8 +386,7 @@ function VideoCall() {
                   link === "Health Profile"
                     ? "text-[#76BC21] border-b-2 border-[#76BC21]"
                     : "text-[#00263E]"
-                }`}
-              >
+                }`}>
                 Health Profile
               </Link>
               <Link
@@ -394,12 +395,11 @@ function VideoCall() {
                   link === "Trackers"
                     ? "text-[#76BC21] border-b-2 border-[#76BC21]"
                     : "text-[#00263E]"
-                }`}
-              >
+                }`}>
                 Trackers
               </Link>
             </div>
-            {/* Balchal code lekha ache */}
+            {/*Test Code */}
             {link === "Trackers" && (
               <div>
                 <div className="flex justify-between bg-[#f5f5f5] p-[8px]">
@@ -412,8 +412,8 @@ function VideoCall() {
                     <IoMdArrowDropdown />
                   </div>
                 </div>
-                <div className="h-[270px] overflow-auto">
-                  <div className="flex justify-between p-[10px]">
+                <div className="mt-2 h-[270px] overflow-auto">
+                  <div className="flex justify-between px-[10px] py-[0px]">
                     <div>
                       <p className="text-[12px] text-[#00263E] ">
                         Oxygen saturation
@@ -571,8 +571,7 @@ function VideoCall() {
                   key={index}
                   className={`mb-4 flex ${
                     message.sender === "User" ? "justify-end" : "justify-start"
-                  }`}
-                >
+                  }`}>
                   <div>
                     {message.text && (
                       <div
@@ -580,8 +579,7 @@ function VideoCall() {
                           message.sender === "User"
                             ? "bg-[#00263E] text-white"
                             : "bg-gray-300"
-                        }`}
-                      >
+                        }`}>
                         <p className="text-[13px]">{message.text}</p>
                         <p className="text-[8px] text-right text-[#B0BCC3]">
                           5:20 A.M
@@ -594,8 +592,7 @@ function VideoCall() {
                           <a
                             href={URL.createObjectURL(message.file)}
                             target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                            rel="noopener noreferrer">
                             <img
                               src={URL.createObjectURL(message.file)}
                               alt="file"
@@ -609,8 +606,7 @@ function VideoCall() {
                               href={URL.createObjectURL(message.file)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-500 text-[10px] overflow-hidden"
-                            >
+                              className="text-blue-500 text-[10px] overflow-hidden">
                               {message.file.name}
                             </a>
                           </div>
@@ -623,8 +619,7 @@ function VideoCall() {
             </div>
             <form
               onSubmit={handleSendMessage}
-              className="flex h-[48px] flex-col mx-4 mb-4 bg-[#eee] space-y-2"
-            >
+              className="flex h-[48px] flex-col mx-4 mb-4 bg-[#eee] space-y-2">
               {/* {filePreview && (
                 <div className=" flex justify-left">
                   <img
@@ -668,8 +663,7 @@ function VideoCall() {
                 </div>
                 <Link
                   onClick={handleTools}
-                  className="flex items-center gap-[20px] py-[10px]"
-                >
+                  className="flex items-center gap-[20px] py-[10px]">
                   <img src={device} alt="" />
                   <div className="flex flex-col gap-[5px]">
                     <p>Monitor multiparameters</p>
@@ -708,8 +702,7 @@ function VideoCall() {
                     <div className="flex flex-col ">
                       <Link
                         onClick={handleMeasurement}
-                        className="flex items-center justify-between border-b py-4"
-                      >
+                        className="flex items-center justify-between border-b py-4">
                         <div className="flex items-center gap-3">
                           <FaHeartCirclePlus size={25} color="#5B99C2" />
                           <p className="text-darkblue text-[16px] font-[600]">
@@ -720,8 +713,7 @@ function VideoCall() {
                       </Link>
                       <Link
                         onClick={handleMeasurement}
-                        className="flex items-center justify-between border-b py-4"
-                      >
+                        className="flex items-center justify-between border-b py-4">
                         <div className="flex items-center gap-3">
                           <MdCompress size={25} color="red" />
                           <p className="text-darkblue text-[16px] font-[600]">
@@ -830,8 +822,7 @@ function VideoCall() {
                     {!measure ? (
                       <button
                         className="w-full bg-darkblue py-3 rounded-[8px] text-white my-[16px]"
-                        onClick={startMeasure}
-                      >
+                        onClick={startMeasure}>
                         Start Measuring
                       </button>
                     ) : (

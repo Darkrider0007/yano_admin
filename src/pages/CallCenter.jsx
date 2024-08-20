@@ -141,17 +141,16 @@ function CallCenter() {
     <div className="h-[calc(100vh-80px)] flex  ">
       {loading && <LoadingScreen />}
       <Sidebar />
-      <div className="p-[32px] flex gap-[30px] bg-[#fff] flex-1  h-[calc(100vh-80px)]">
+      <div className="p-[32px] flex gap-[30px] bg-[#FAFAFA] flex-1  h-[calc(100vh-80px)] overflow-x-auto">
         <div
-          style={{
-            boxShadow:
-              " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
-          }}
+          // style={{
+          //   boxShadow:
+          //     " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
+          // }}
           ref={liveConsultationRef}
-          className={`h-[550px] p-[16px] shadow-2xl bg-[#fff] w-[343px] rounded-[8px] transition-all  ${
+          className={`h-[550px] p-[16px] border border-[#EEEEEE] bg-[#fff] w-[343px] rounded-[8px] transition-all  ${
             mode ? "block" : "hidden"
-          }`}
-        >
+          }`}>
           <p className="text-[#00263E] text-[18px] font-[600]">
             Live consultations
           </p>
@@ -194,8 +193,7 @@ function CallCenter() {
               <Link
                 onClick={handleClick}
                 // to="/videoCall"
-                className="w-[32px] h-[32px] rounded-[50%] bg-[#0F8D47] flex items-center justify-center "
-              >
+                className="w-[32px] h-[32px] rounded-[50%] bg-[#0F8D47] flex items-center justify-center ">
                 <IoMdCall color="#fff" />
               </Link>
               <Link className="w-[32px] h-[32px] rounded-[50%] bg-[#D82724] flex items-center justify-center ">
@@ -254,14 +252,13 @@ function CallCenter() {
           </div>
         </div>
         <div
-          style={{
-            boxShadow:
-              " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
-          }}
-          className={`h-[550px] p-[16px]  bg-[#fff] shadow-2xl w-[343px] rounded-[8px] ${
+          // style={{
+          //   boxShadow:
+          //     " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
+          // }}
+          className={`h-[550px] p-[16px]  bg-[#fff] border border-[#EEEEEE] w-[343px] rounded-[8px] ${
             showProfile ? "block" : "hidden"
-          }`}
-        >
+          }`}>
           <div className="flex  justify-between">
             <img
               src={patient}
@@ -272,7 +269,7 @@ function CallCenter() {
               <IoClose size={25} />
             </Link>
           </div>
-          <div className="border-b-2 p-[16px]">
+          <div className="border-b-2 py-[16px]">
             <p className="text-[18px] text-[#00263E] font-[600]">Wade Warren</p>
             <div className="flex gap-[32px] text-[13px] text-[#546E7E]">
               <div>
@@ -310,8 +307,7 @@ function CallCenter() {
                 activeLink === "Health Profile"
                   ? "text-[#76BC21] border-b-2 border-[#76BC21]  "
                   : "text-[#00263E] hover:bg-lightgreen"
-              }`}
-            >
+              }`}>
               Health Profile
             </Link>
             <Link
@@ -320,12 +316,11 @@ function CallCenter() {
                 activeLink === "Trackers"
                   ? "text-[#76BC21] border-b-2 border-[#76BC21]"
                   : "text-[#00263E] hover:bg-lightgreen"
-              }`}
-            >
+              }`}>
               Trackers
             </Link>
           </div>
-          {/* Balchal code lekha ache */}
+          {/* Code for testing purpose */}
           {activeLink === "Trackers" && (
             <div>
               <div className="flex justify-between bg-[#f5f5f5] p-[8px]">
@@ -473,17 +468,16 @@ function CallCenter() {
               </div>
             </div>
           )}
-          {/* Balchal code lekha ache */}
+          {/* Code for testing*/}
         </div>
         {/* doctor profile */}
         <div
-          style={{
-            boxShadow:
-              " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
-          }}
+          // style={{
+          //   boxShadow:
+          //     " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
+          // }}
           ref={doctor}
-          className="p-[16px] bg-[#fff] w-[343px] shadow-2xl rounded-[8px] h-[415px]"
-        >
+          className="p-[16px] bg-[#fff] w-[343px] border  border-[#EEEEEE] rounded-[8px] h-[415px]">
           <img
             src={patient}
             alt=""
@@ -498,16 +492,14 @@ function CallCenter() {
             {mode ? (
               <div
                 onClick={handleMode}
-                className="flex justify-center items-center cursor-pointer bg-[#E7F4ED] w-[80px] px-[6px] py-[4px] gap-2 rounded-[45px]"
-              >
+                className="flex justify-center items-center cursor-pointer bg-[#E7F4ED] w-[80px] px-[6px] py-[4px] gap-2 rounded-[45px]">
                 <div className="w-[8px] h-[8px] bg-[#0F8D47] rounded-[8px]" />
                 <p className="text-[12px] text-[#0F8D47] font-[600]">Online</p>
               </div>
             ) : (
               <div
                 onClick={handleMode}
-                className="flex justify-center cursor-pointer items-center bg-[#FBE9E9] w-[80px] px-[6px] py-[4px] gap-2 rounded-[45px]"
-              >
+                className="flex justify-center cursor-pointer items-center bg-[#FBE9E9] w-[80px] px-[6px] py-[4px] gap-2 rounded-[45px]">
                 <div className="w-[8px] h-[8px] bg-[#D82724] rounded-[8px]" />
                 <p className="text-[12px] text-[#D82724] font-[600]">Offline</p>
               </div>
