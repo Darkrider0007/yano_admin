@@ -33,6 +33,7 @@ import { fetchDoctorUserData, fetchPatientUserData } from "@/API/dataFetch";
 import { toggleActive } from "@/API/sendData";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "@/components/PDF/MyDocument";
+import { PlusIcon } from "lucide-react";
 
 const data = [
   {
@@ -267,6 +268,22 @@ export default function User() {
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
+
+  useEffect(() => {
+    const filteredData = fixedData.filter((user) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+      const matchesSearchQuery =
+        fullName.includes(searchQuery.toLowerCase()) ||
+        user._id.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesTypeFilter =
+        selectedTypes.length === 0 || selectedTypes.includes(user.userType);
+
+      return matchesSearchQuery && matchesTypeFilter;
+    });
+
+    setFilteredData(filteredData);
+  }, [searchQuery, selectedTypes]);
 
   // Handle type filter change
   const handleTypeChange = (selectedOptions) => {
@@ -741,12 +758,23 @@ export default function User() {
                 deactivateUser();
                 closePopup();
               }}>
-              <img
-                src={deactivate}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-              <p className="text-[#455560] text-[14px]">Deactivate user</p>
+              {selectedUser.isActive === true ? (
+                <img
+                  src={deactivate}
+                  alt=""
+                  className="w-[16px] h-[16px] object-contain"
+                />
+              ) : (
+                <div className="w-[16px] h-[16px] rounded-full border-2 border-[#062B42] flex items-center justify-center">
+                  <PlusIcon className="w-[14px] h-[14px] object-contain" />
+                </div>
+              )}
+
+              <p className="text-[#455560] text-[14px]">
+                {selectedUser.isActive === true
+                  ? "Deactivate user"
+                  : "Activate user"}
+              </p>
             </li>
           </ul>
         </div>

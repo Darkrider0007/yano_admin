@@ -28,6 +28,7 @@ import { Permissions } from "@/constant/permissions";
 import { toggleActive } from "@/API/sendData";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AdminListPDF from "@/components/PDF/AdminListPDF";
+import { PlusIcon } from "lucide-react";
 
 function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -419,12 +420,23 @@ function AdminList() {
                 deactivateUser(selectedAdmin);
                 closePopup();
               }}>
-              <img
-                src={deactivate}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-              <p className="text-[#455560] text-[14px]">Deactivate user</p>
+              {selectedAdmin.status === "active" ? (
+                <img
+                  src={deactivate}
+                  alt=""
+                  className="w-[16px] h-[16px] object-contain"
+                />
+              ) : (
+                <div className="w-[16px] h-[16px] rounded-full border-2 border-[#062B42] flex items-center justify-center">
+                  <PlusIcon className="w-[14px] h-[14px] object-contain" />
+                </div>
+              )}
+
+              <p className="text-[#455560] text-[14px]">
+                {selectedAdmin.status === "active"
+                  ? "Deactivate user"
+                  : "Activate user"}
+              </p>
             </li>
           </ul>
         </div>

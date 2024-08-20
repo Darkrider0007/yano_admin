@@ -149,7 +149,7 @@ const endpoints = {
   mood: "mood",
 };
 
-function BarGraph() {
+function  BarGraph() {
   const [selectedCountry, setSelectedCountry] = useState("All");
   const [selectedMetric, setSelectedMetric] = useState("bloodGlucose");
   const [ageRangeData, setAgeRangeData] = useState([]);

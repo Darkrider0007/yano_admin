@@ -64,9 +64,9 @@ const LineGraph = ({ data, valueKey }) => {
             content={<CustomTooltip unit={unitMapping[valueKey]} />}
             cursor={{
               stroke: "#ABABAB",
-              strokeDasharray: "2 4",
-              strokeWidth: 1,
-              strokeDashoffset: 5,
+              strokeDasharray: "6 8",
+              strokeWidth: 2,
+              strokeDashoffset: 10,
             }}
           />
           <Line
