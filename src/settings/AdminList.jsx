@@ -34,7 +34,6 @@ function AdminList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState(null);
   const [admin, setAdmin] = useState([]);
-  // three dot action functions
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -42,16 +41,22 @@ function AdminList() {
   const [isDownloadComplete, setIsDownloadComplete] = useState(false);
   const popupRef = useRef(null);
 
+  // UseMemo to filter the admins based on search query
   const filteredAdmins = useMemo(() => {
-    return admin.filter(
-      (admin) =>
-        `${admin.firstName} ${admin.lastName}`
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        admin._id.includes(searchQuery)
-    );
+    return admin.filter((admin) => {
+      const fullName = `${admin.firstName || ""} ${
+        admin.lastName || ""
+      }`.toLowerCase();
+      const id = admin._id ? admin._id.toLowerCase() : "";
+
+      return (
+        fullName.includes(searchQuery.toLowerCase()) ||
+        id.includes(searchQuery.toLowerCase())
+      );
+    });
   }, [searchQuery, admin]);
 
+  // UseMemo to sort the filtered admins based on the sortConfig
   const sortedAdmins = useMemo(() => {
     if (sortConfig !== null) {
       return [...filteredAdmins].sort((a, b) => {
@@ -101,8 +106,6 @@ function AdminList() {
   };
 
   const deactivateUser = async () => {
-    // console.log("deactivate user");
-
     const updateAdmin = await toggleActive(selectedAdmin.id, {
       isActive: selectedAdmin.status === "active" ? false : true,
     });
@@ -140,14 +143,14 @@ function AdminList() {
   };
 
   useEffect(() => {
-    // Event listener for detecting clicks outside
     const handleClickOutside = (event) => {
-      // Your logic to handle the click outside
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        closePopup();
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Function to fetch and transform admin data
     const fetchAdmins = async () => {
       try {
         const response = await fetchDoctorData();
@@ -172,9 +175,8 @@ function AdminList() {
       }
     };
 
-    fetchAdmins(); // Fetch admins when the component mounts
+    fetchAdmins();
 
-    // Cleanup function to remove the event listener
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -302,9 +304,7 @@ function AdminList() {
                       {admin?.id}
                     </div>
                   </TableCell>
-                  <TableCell
-                    // onClick={handleRowClick}
-                    className="text-[#3E79F7] cursor-pointer">
+                  <TableCell className="text-[#3E79F7] cursor-pointer">
                     <Link to={`/user/${admin?.id}`} state={{ admin }}>
                       {admin?.full_name}
                     </Link>
