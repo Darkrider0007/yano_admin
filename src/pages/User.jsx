@@ -11,7 +11,7 @@ import {
 import Sidebar from "@/components/Sidebar";
 import { FaPlus } from "react-icons/fa6";
 import downgray from "../assets/icons/downgray.png";
-import threedot from "../assets/icons/threedot.jpg";
+import threedot from "../assets/icons/threedot.svg";
 import search from "../assets/icons/search.png";
 import filterimg from "../assets/icons/filter.png";
 import FilterDropdown from "@/components/FilterDropdown";

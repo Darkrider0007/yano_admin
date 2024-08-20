@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import downgray from "../assets/icons/downgray.png";
-import threedot from "../assets/icons/threedot.jpg";
+import threedot from "../assets/icons/threedot.svg";
 import search from "../assets/icons/search.png";
 import arrowback from "../assets/icons/arrowback.png";
 import arrowforward from "../assets/icons/arrowforward.png";
@@ -328,11 +328,7 @@ function AdminList() {
                   <TableCell
                     onClick={(e) => handleThreeDotClick(e, admin)}
                     className="pl-[35px]">
-                    <img
-                      className="w-[16px] cursor-pointer"
-                      src={threedot}
-                      alt=""
-                    />
+                    <img className="cursor-pointer" src={threedot} alt="" />
                   </TableCell>
                 </TableRow>
               ))}

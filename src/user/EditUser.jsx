@@ -9,6 +9,7 @@ import date from "../assets/icons/date.png";
 import password from "../assets/icons/password.png";
 import closegreen from "../assets/icons/closegreen.png";
 import countryRev from "../assets/countryRev.json";
+import SingleCalender from "@/components/SingleCalender";
 
 function EditUser() {
   const [show, setShow] = useState(false);
@@ -17,6 +18,7 @@ function EditUser() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [country, setCountry] = useState("India");
   const [selectedRole, setSelectedRole] = useState("");
+  const [showCalender, setShowCalender] = useState(false);
 
   const location = useLocation();
   const { userID } = useParams();
@@ -140,9 +142,9 @@ function EditUser() {
               className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
-            <div className="flex items-center justify-between w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
+            <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
               <input
-                className="w-full h-[49px] shadow-none border outline-none pl-2 bg-[#FAFAFA] rounded-[8px]"
+                className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
                 type="text"
                 id="dob"
                 name="dob"
@@ -152,6 +154,9 @@ function EditUser() {
               <img
                 src={date}
                 alt=""
+                onClick={() => {
+                  setShowCalender(true);
+                }}
                 className="w-[16px] h-[16px] object-contain"
               />
             </div>
@@ -211,6 +216,13 @@ function EditUser() {
             </label>
           </div>
         </div>
+        {showCalender && (
+          <SingleCalender
+            handleSetDate={() => {
+              setShowCalender(false);
+            }}
+          />
+        )}
         <div className="w-[626px] my-[20px] p-[20px] rounded-[8px] bg-white shadow">
           <p className="text-[20px] text-darkblue font-bold pb-[32px]">
             Change password
