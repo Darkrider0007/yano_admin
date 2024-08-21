@@ -25,6 +25,7 @@ module.exports = {
           " -2px 2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1)",
       },
       colors: {
+        lightgray: "#19181A",
         darkblue: "#00263E",
         lightgreen: "#F1F8E9",
         green: "#76BC213D",

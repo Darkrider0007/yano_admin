@@ -149,10 +149,20 @@ const endpoints = {
   mood: "mood",
 };
 
-function  BarGraph() {
+const dummyData = [
+  { ageRange: "18-24", avgMetric: 5 },
+  { ageRange: "25-34", avgMetric: 10 },
+  { ageRange: "35-44", avgMetric: 15 },
+  { ageRange: "45-54", avgMetric: 20 },
+  { ageRange: "55-64", avgMetric: 25 },
+  { ageRange: "65-74", avgMetric: 40 },
+  { ageRange: "75+", avgMetric: 30 },
+];
+
+function BarGraph() {
   const [selectedCountry, setSelectedCountry] = useState("All");
   const [selectedMetric, setSelectedMetric] = useState("bloodGlucose");
-  const [ageRangeData, setAgeRangeData] = useState([]);
+  const [ageRangeData, setAgeRangeData] = useState(dummyData);
 
   const handleDayChange = (option) => {
     setSelectedCountry(option.value);
@@ -175,15 +185,12 @@ function  BarGraph() {
   useEffect(() => {
     const getData = async () => {
       const data = await fetchData(endpoints[selectedMetric]);
-      // console.log("Fetched Data:", data); // Log fetched data
 
       if (data && data.length > 0) {
         const filteredData =
           selectedCountry === "All"
             ? data
             : data.filter((item) => item.country === selectedCountry);
-
-        // console.log("Filtered Data:", filteredData); // Log filtered data
 
         const calculatedAgeRangeData = ageRanges.map((range) => {
           const [min, max] = range.includes("+")
@@ -194,8 +201,6 @@ function  BarGraph() {
             (item) => item.age >= min && item.age <= max
           );
 
-          // console.log(`Data for ${range}:`, groupData); // Log group data for each range
-
           const avgMetric =
             groupData.reduce((sum, item) => sum + item.data, 0) /
               groupData.length || 0;
@@ -203,11 +208,10 @@ function  BarGraph() {
           return { ageRange: range, avgMetric };
         });
 
-        // console.log("Calculated Age Range Data:", calculatedAgeRangeData); // Log final calculated data
-
         setAgeRangeData(calculatedAgeRangeData);
       } else {
         console.error("No data returned or data structure is incorrect.");
+        setAgeRangeData(dummyData);
       }
     };
 
@@ -233,8 +237,20 @@ function  BarGraph() {
     { label: "Mood", value: "mood" },
   ];
 
+  useEffect(() => {
+    console.log(ageRangeData);
+    const size = ageRangeData.length;
+    let cnt = 0;
+    ageRangeData.map((item) => {
+      if (item.avgMetric == 0) cnt++;
+    });
+
+    if (size == cnt) setAgeRangeData(dummyData);
+  }),
+    [];
+
   return (
-    <div className=" h-[404px] w-[45%] bg-[#fff] rounded-[8px]  relative shadow">
+    <div className="h-[404px] w-[45%] bg-[#fff] rounded-[8px] relative shadow">
       <h1 className="text-[#00263E] font-[600] text-[16px] p-[16px]">Age</h1>
       {ageRangeData.length > 0 ? (
         <BarChart width={520} height={280} data={ageRangeData}>
@@ -267,7 +283,7 @@ function  BarGraph() {
         <p className="text-center text-red-500">No data available</p>
       )}
       <div className="border-t-2 border-[#eee]" />
-      <div className="flex gap-4  absolute bottom-[15px] pl-[30px] ">
+      <div className="flex gap-4 absolute bottom-[15px] pl-[30px]">
         <label>
           <Dropdown
             options={daysFilter}

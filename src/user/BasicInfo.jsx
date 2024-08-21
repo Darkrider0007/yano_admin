@@ -15,6 +15,7 @@ import BackBtn from "@/components/BackBtn";
 import PhoneFormDataPass from "@/components/PhoneNumberDataPass";
 import countryRev from "../assets/countryRev.json";
 import SingleCalender from "@/components/SingleCalender";
+import DatePickerComponent from "@/components/DatePickerComponent";
 
 function BasicInfo() {
   const [show, setShow] = useState(false);
@@ -83,6 +84,10 @@ function BasicInfo() {
   };
 
   const [selectedRole, setSelectedRole] = useState("");
+
+  const handleDateChange = (date) => {
+    setDateOfBirth(date); // Update the state with the selected date
+  };
 
   useEffect(() => {
     if (data?.userType === "doctor") {
@@ -221,7 +226,7 @@ function BasicInfo() {
                 className="w-[16px] h-[16px] object-contain"
               />
             </div> */}
-            <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
+            {/* <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
               <input
                 className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
                 type="text"
@@ -238,6 +243,20 @@ function BasicInfo() {
                 }}
                 alt=""
                 className="w-[16px] h-[16px] object-contain"
+              />
+            </div> */}
+            <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
+              <input
+                className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
+                type="text"
+                id="dob"
+                name="dob"
+                value={formatDate(data?.dateOfBirth)} // Display the formatted date in the input
+                readOnly
+              />
+              <DatePickerComponent
+                dateIconSrc={date}
+                onDateChange={handleDateChange}
               />
             </div>
           </div>

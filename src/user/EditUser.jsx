@@ -10,6 +10,8 @@ import password from "../assets/icons/password.png";
 import closegreen from "../assets/icons/closegreen.png";
 import countryRev from "../assets/countryRev.json";
 import SingleCalender from "@/components/SingleCalender";
+import { Calendar } from "@/components/ui/calendar";
+import DatePickerComponent from "@/components/DatePickerComponent";
 
 function EditUser() {
   const [show, setShow] = useState(false);
@@ -19,6 +21,7 @@ function EditUser() {
   const [country, setCountry] = useState("India");
   const [selectedRole, setSelectedRole] = useState("");
   const [showCalender, setShowCalender] = useState(false);
+  const [dateOfBirth, setDateOfBirth] = useState(null);
 
   const location = useLocation();
   const { userID } = useParams();
@@ -29,11 +32,11 @@ function EditUser() {
 
   console.log("data", data);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const formattedDate = date.toISOString().split("T")[0];
-    return formattedDate;
-  };
+  // const formatDate = (dateString) => {
+  //   const date = new Date(dateString);
+  //   const formattedDate = date.toISOString().split("T")[0];
+  //   return formattedDate;
+  // };
 
   const handleInputs = (e) => {
     setNewPassword(e.target.value);
@@ -47,6 +50,17 @@ function EditUser() {
 
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
+  };
+
+  // const [dateOfBirth, setDateOfBirth] = useState(null);
+
+  const formatDate = (date) => {
+    if (!date) return ""; // Return an empty string if no date is selected
+    return new Date(date).toLocaleDateString(); // Format the date as needed (MM/DD/YYYY)
+  };
+
+  const handleDateChange = (date) => {
+    setDateOfBirth(date); // Update the state with the selected date
   };
 
   useEffect(() => {
@@ -142,22 +156,32 @@ function EditUser() {
               className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
+            {/* <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
+              <input
+                className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
+                type="text"
+                id="dob"
+                name="dob"
+                value={formatDate(dateOfBirth)} // Update this value based on selected date
+                readOnly
+              />
+              <DatePickerComponent
+                dateIconSrc={date}
+                onDateChange={handleDateChange}
+              />
+            </div> */}
             <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
               <input
                 className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
                 type="text"
                 id="dob"
                 name="dob"
-                value={formatDate(data?.dateOfBirth)}
+                value={formatDate(dateOfBirth)} // Display the formatted date in the input
                 readOnly
               />
-              <img
-                src={date}
-                alt=""
-                onClick={() => {
-                  setShowCalender(true);
-                }}
-                className="w-[16px] h-[16px] object-contain"
+              <DatePickerComponent
+                dateIconSrc={date}
+                onDateChange={handleDateChange} // Pass the function to update the date
               />
             </div>
           </div>
@@ -217,11 +241,13 @@ function EditUser() {
           </div>
         </div>
         {showCalender && (
-          <SingleCalender
-            handleSetDate={() => {
-              setShowCalender(false);
-            }}
-          />
+          <>
+            <SingleCalender
+              handleSetDate={() => {
+                setShowCalender(false);
+              }}
+            />
+          </>
         )}
         <div className="w-[626px] my-[20px] p-[20px] rounded-[8px] bg-white shadow">
           <p className="text-[20px] text-darkblue font-bold pb-[32px]">
