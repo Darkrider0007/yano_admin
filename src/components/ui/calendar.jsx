@@ -62,12 +62,14 @@ function Calendar({
     setMonthToDisplay(new Date(selectedYear, selectedMonth));
   }, [selectedMonth, selectedYear]);
 
+  console.log(selectedDateFromCalender);
+  console.log(new Date(selectedDateFromCalender));
   const [selectedDay, setSelectedDay] = React.useState(
-    selectedDateFromCalender || null
+    new Date(selectedDateFromCalender) || null
   );
 
-  console.log("Selected Day:", selectedDay);
-  console.log("Selected Date from Calendar:", selectedDateFromCalender);
+  // console.log("Selected Day:", selectedDay);
+  // console.log("Selected Date from Calendar:", selectedDateFromCalender);
 
   const [onClickButton, setOnClickButton] = React.useState(false);
 
