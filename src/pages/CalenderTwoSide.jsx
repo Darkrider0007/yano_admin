@@ -1,61 +1,44 @@
-import CalenderPicker from "@/components/CalenderDropdown";
-import FilterDropdown from "@/components/FilterDropdown";
 import { Calendar } from "@/components/ui/calendar";
-import YearDropdown from "@/components/YearDropdown";
-import CustomDropdown from "@/components/YearDropdown";
 import React from "react";
 
 function CalenderTwoSide({ handleSetDate }) {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const countryList = [
-    { label: "Mexico", value: "Mexico" },
-    { label: "Brazil", value: "Brazil" },
-    { label: "Venezuela", value: "Venezuela" },
-    { label: "Colombia", value: "Colombia" },
-  ];
-  const handleCountryChange = (option) => {
-    setCountry(option);
+  const [firstDate, setFirstDate] = React.useState(null);
+  const [selectedDate, setSelectedDate] = React.useState(null);
+
+  const firstHandleDateChange = (date) => {
+    setFirstDate(date);
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date); // Set the selected date
+  const secondHandleDateChange = (date) => {
+    setSelectedDate(date);
   };
+
+  const handleSetDateClick = () => {
+    handleSetDate(firstDate, selectedDate);
+  };
+
   return (
-    // <div class="flex items-center justify-center w-full min-h-screen bg-gray-50">
-    <div class="flex  bg-white shadow-lg rounded-xl py-6 border-2">
-      <div class="flex flex-col">
+    <div className="flex bg-white shadow-lg rounded-xl py-6 border-2">
+      <div className="flex flex-col">
         <div className="flex">
           <div className="flex flex-col px-7">
-            <Calendar customYear={100} onDayClick={handleDateChange} />
+            <Calendar customYear={100} onDayClick={firstHandleDateChange} />
           </div>
-          <div className="border-l-2 flex px-7 flex-col ">
-            <Calendar customYear={100} onDayClick={handleDateChange} />
+          <div className="border-l-2 flex px-7 flex-col">
+            <Calendar customYear={100} onDayClick={secondHandleDateChange} />
           </div>
         </div>
 
-        <div class="flex items-center justify-end px-6 pt-6 pb-0">
-          <div class="flex items-center gap-x-2 ">
+        <div className="flex items-center justify-end px-6 pt-6 pb-0">
+          <div className="flex items-center gap-x-2">
             <button
               onClick={handleSetDate}
-              class="px-4 py-2 text-[14px] rounded-[8px] text-[#19181A] bg-[#E5E9EB] outline-none">
+              className="px-4 py-2 text-[14px] rounded-[8px] text-[#19181A] bg-[#E5E9EB] outline-none">
               Cancel
             </button>
             <button
-              onClick={handleSetDate}
-              class="px-4 py-2 text-[14px] text-white bg-[#00263E] rounded-[8px]">
+              onClick={handleSetDateClick}
+              className="px-4 py-2 text-[14px] text-white bg-[#00263E] rounded-[8px]">
               Set Date
             </button>
           </div>

@@ -34,6 +34,7 @@ import { toggleActive } from "@/API/sendData";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "@/components/PDF/MyDocument";
 import { PlusIcon } from "lucide-react";
+import { formatDateRange } from "@/helpers/formatDateRange";
 
 const data = [
   {
@@ -365,6 +366,20 @@ export default function User() {
     }, 2000);
   };
 
+  const [dateRange, setDateRange] = useState("Select a date range");
+  const [firstDate, setFirstDate] = useState(null);
+  const [secondDate, setSecondDate] = useState(null);
+
+  const handleSetDate = (firstDate, secondDate) => {
+    if (firstDate && secondDate) {
+      setFirstDate(firstDate);
+      setSecondDate(secondDate);
+      const formattedRange = `${firstDate.toLocaleDateString()} - ${secondDate.toLocaleDateString()}`;
+      setDateRange(formattedRange);
+    }
+    setShowCalender(false);
+  };
+
   return (
     <div className="grid min-h-screen max-w-screen">
       <div className="flex w-full">
@@ -429,19 +444,6 @@ export default function User() {
                     </div>
                   ) : (
                     <form className="p-[16px] flex flex-wrap justify-between items-center">
-                      {/* <div
-                        className={`flex items-center border rounded-[8px] bg-[#fafafa] h-[40px] px-2 ${
-                          filter ? "w-full md:w-1/4" : "w-full md:w-1/3"
-                        }`}>
-                        <img src={search} alt="" />
-                        <input
-                          className="w-full bg-transparent shadow-none border-none outline-none pl-2 placeholder-[#72849A]"
-                          placeholder="Search for users ..."
-                          type="search"
-                          value={searchQuery}
-                          onChange={handleSearchChange}
-                        />
-                      </div> */}
                       <div className="flex-1 flex justify-end items-center mt-4 md:mt-0">
                         {filter === false ? (
                           <div className="w-full flex flex-wrap justify-between items-center">
@@ -510,20 +512,20 @@ export default function User() {
                               }}
                               className="flex items-center gap-2 px-[12px] py-[6px] border-2 rounded-[6px] bg-[#fafafa]">
                               <p className="text-[#455560]">
-                                May 8 - June 8, 1992
+                                {firstDate && secondDate
+                                  ? formatDateRange(dateRange)
+                                  : "Select a date range"}
                               </p>
                               <img
                                 src={calendar}
-                                alt=""
+                                alt="Calendar Icon"
                                 className="w-[16px] h-[16px]"
                               />
                             </Link>
                             {showCalender && (
-                              <div className="bg-[#fafafa] absolute right-[8.5%] bottom-[5%] z-50">
+                              <div className="bg-[#fafafa] absolute right-[8.5%] bottom-10 z-50">
                                 <CalenderTwoSide
-                                  handleSetDate={() => {
-                                    setShowCalender(false);
-                                  }}
+                                  handleSetDate={handleSetDate}
                                 />
                               </div>
                             )}
