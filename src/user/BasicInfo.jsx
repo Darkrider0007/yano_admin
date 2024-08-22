@@ -214,7 +214,7 @@ function BasicInfo() {
               />
             </div>
             {showCalender && (
-              <div className="absolute top-[43%] left-[7%]">
+              <div className="absolute top-80 left-[7%]">
                 <SingleCalender
                   currentDate={data?.dateOfBirth}
                   handleSetDate={(date) => {

@@ -107,13 +107,15 @@ function Calendar({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
-            {months.map((month, index) => (
-              <DropdownMenuItem
-                key={index}
-                onClick={() => handleMonthChange(index)}>
-                {month}
-              </DropdownMenuItem>
-            ))}
+            <ScrollArea className="h-80">
+              {months.map((month, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => handleMonthChange(index)}>
+                  {month}
+                </DropdownMenuItem>
+              ))}
+            </ScrollArea>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -131,7 +133,7 @@ function Calendar({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white text-darkblue">
-            <ScrollArea className="h-40">
+            <ScrollArea className="h-80">
               {years.map((year) => (
                 <DropdownMenuItem
                   key={year}

@@ -480,7 +480,7 @@ function CreateUser() {
         </div>
       </div>
       {showCalender && (
-        <div className="absolute top-[19%] left-[7%]">
+        <div className="absolute top-32 left-[7%]">
           <SingleCalender
             currentDate={startDate}
             handleSetDate={(date) => {
