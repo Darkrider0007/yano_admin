@@ -29,7 +29,9 @@ function EditUser() {
 
   // console.log("userID", userID);
 
-  const data = location.state?.user;
+  const data1 = location.state?.user;
+
+  const [data, setData] = useState(data1);
 
   // console.log("data", data);
 
@@ -171,7 +173,7 @@ function EditUser() {
                 type="text"
                 id="dob"
                 name="dob"
-                value={dateOfBirth}
+                value={formatDateInNew(formatDate(data?.dateOfBirth))}
                 readOnly
               />
               <div className="inline-block">
@@ -247,6 +249,10 @@ function EditUser() {
               handleSetDate={(date) => {
                 setShowCalender(false);
                 setDateOfBirth(formatDateInNew(formatDate(date)));
+                setData((prevState) => ({
+                  ...prevState,
+                  dateOfBirth: date,
+                }));
               }}
             />
           </div>

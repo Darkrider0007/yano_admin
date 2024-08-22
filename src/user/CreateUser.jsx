@@ -482,10 +482,11 @@ function CreateUser() {
       {showCalender && (
         <div className="absolute top-[19%] left-[7%]">
           <SingleCalender
-            currentDate={userData.dob}
+            currentDate={startDate}
             handleSetDate={(date) => {
               setShowCalender(false);
               console.log(date);
+              setStartDate(date);
               setUserData((prevState) => ({
                 ...prevState,
                 dob: date,

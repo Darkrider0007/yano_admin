@@ -4,7 +4,7 @@ import { Calendar } from "./ui/calendar";
 function SingleCalender({ currentDate, handleSetDate }) {
   const calendarRef = useRef(null); // Define the calendarRef here
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Default to today's date
+  const [selectedDate, setSelectedDate] = useState(currentDate || new Date()); // Default to today's date
   const [selectedDay, setSelectedDay] = useState(null);
 
   const toggleDropdown = () => {
@@ -37,7 +37,7 @@ function SingleCalender({ currentDate, handleSetDate }) {
         <div className="flex flex-col w-full items-center justify-center pr-1 ">
           <Calendar
             customYear={100}
-            selectedDateFromCalender={currentDate}
+            selectedDateFromCalender={selectedDate}
             onDayClick={handleDateChange}
           />
         </div>

@@ -174,8 +174,10 @@ function Calendar({
           row: "flex justify-between mt-2",
           cell: "h-10 w-10 text-center text-sm rounded-full p-0 relative [&:has([aria-selected].day-range-end)]:rounded-full [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-primary/20 first:[&:has([aria-selected])]:rounded-full last:[&:has([aria-selected])]:rounded-full focus-within:relative focus-within:z-20",
           day: cn(
-            buttonVariants({ variant: "ghost" }),
-            "h-10 w-10 p-0 font-normal rounded-full text-darkblue aria-selected:opacity-100"
+            buttonVariants({ variant: "calenderBtn" }),
+            `${
+              !onClickButton && "hover:bg-accent hover:text-accent-foreground"
+            }  h-10 w-10 p-0 font-normal rounded-full text-darkblue aria-selected:opacity-100`
           ),
           day_range_end: "day-range-end",
           day_outside:

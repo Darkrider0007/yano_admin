@@ -228,61 +228,6 @@ function BasicInfo() {
               </div>
             )}
           </div>
-          {/* <div className="flex items-center gap-3 cursor-none">
-            <label
-              className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${
-                userType
- === "patient"
-                  ? "border-[#76BC21]"
-                  : "border-gray-300"
-              }`}>
-              <div
-                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
-                  selectedRole === "patient"
-                    ? "border-[#76BC21]"
-                    : "border-gray-300"
-                }`}>
-                {selectedRole === "patient" && (
-                  <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
-                )}
-              </div>
-              <input
-                type="radio"
-                className="hidden"
-                name="role"
-                value="patient"
-                checked={selectedRole === "patient"}
-                // onChange={handleRoleChange}
-              />
-              <span className="ml-2 text-gray-700">Patient</span>
-            </label>
-            <label
-              className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${
-                selectedRole === "provider"
-                  ? "border-[#76BC21]"
-                  : "border-gray-300"
-              }`}>
-              <div
-                className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
-                  selectedRole === "provider"
-                    ? "border-[#76BC21]"
-                    : "border-gray-300"
-                }`}>
-                {selectedRole === "provider" && (
-                  <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
-                )}
-              </div>
-              <input
-                type="radio"
-                className="hidden"
-                name="role"
-                value="provider"
-                checked={selectedRole === "provider"}
-                // onChange={handleRoleChange}
-              />
-              <span className="ml-2 text-gray-700">Healthcare Provider</span>
-            </label>
-          </div> */}
 
           <div className="flex items-center gap-3 cursor-none">
             <label

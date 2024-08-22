@@ -35,19 +35,19 @@ function CalenderTwoSide({ handleSetDate }) {
   };
   return (
     // <div class="flex items-center justify-center w-full min-h-screen bg-gray-50">
-    <div class="flex  bg-white shadow-lg rounded-xl">
+    <div class="flex  bg-white shadow-lg rounded-xl py-6 border-2">
       <div class="flex flex-col">
         <div className="flex">
-          <div className="flex flex-col ">
+          <div className="flex flex-col px-7">
             <Calendar customYear={100} onDayClick={handleDateChange} />
           </div>
-          <div className="flex flex-col  ">
+          <div className="border-l-2 flex px-7 flex-col ">
             <Calendar customYear={100} onDayClick={handleDateChange} />
           </div>
         </div>
 
-        <div class="flex items-center justify-end px-6 py-4">
-          <div class="flex items-center space-x-2">
+        <div class="flex items-center justify-end px-6 pt-6 pb-0">
+          <div class="flex items-center gap-x-2 ">
             <button
               onClick={handleSetDate}
               class="px-4 py-2 text-[14px] rounded-[8px] text-[#19181A] bg-[#E5E9EB] outline-none">
