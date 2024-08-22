@@ -26,3 +26,8 @@ export function formatDateInNew(inputDate) {
   // Format the date in the desired format
   return `${month} ${day}, ${year}`;
 }
+
+export const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString();
+};

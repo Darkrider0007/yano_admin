@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import SingleCalender from "./SingleCalender";
 
-function DatePickerComponent({ dateIconSrc, onDateChange }) {
+function DatePickerComponent({ currentDate, dateIconSrc, onDateChange }) {
   const [showCalender, setShowCalender] = useState(false);
   const iconRef = useRef(null);
   const calendarRef = useRef(null);
@@ -23,7 +23,10 @@ function DatePickerComponent({ dateIconSrc, onDateChange }) {
 
       {showCalender && (
         <div ref={calendarRef} className="absolute z-10 top-[180px] left-2">
-          <SingleCalender handleSetDate={handleSetDate} />
+          <SingleCalender
+            currentDate={currentDate}
+            handleSetDate={handleSetDate}
+          />
         </div>
       )}
     </div>

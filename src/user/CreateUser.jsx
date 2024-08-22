@@ -241,6 +241,7 @@ import check from "../assets/icons/check.png";
 import date from "../assets/icons/date.png";
 import SingleCalender from "@/components/SingleCalender";
 import password from "../assets/icons/password.png";
+import { formatDate, formatDateInNew } from "@/helpers/farmatDate";
 
 function CreateUser() {
   const containerStyle = {
@@ -308,8 +309,7 @@ function CreateUser() {
             <div className="mt-[20px]">
               <label
                 htmlFor="firstName"
-                className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-              >
+                className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
                 First Name
               </label>
               <input
@@ -325,8 +325,7 @@ function CreateUser() {
             <div className="mt-[20px]">
               <label
                 htmlFor="lastName"
-                className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-              >
+                className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
                 Last Name
               </label>
               <input
@@ -342,8 +341,7 @@ function CreateUser() {
             <div className="mt-[20px]">
               <label
                 htmlFor="email"
-                className="text-[14px] mb-[4px] text-[#00263E] font-[500]"
-              >
+                className="text-[14px] mb-[4px] text-[#00263E] font-[500]">
                 Email address
               </label>
               <input
@@ -361,12 +359,21 @@ function CreateUser() {
             <div className="mt-[20px] mb-[16px]">
               <label
                 htmlFor="email"
-                className="text-[14px] text-[#00263E] mb-[4px] font-[500]"
-              >
+                className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
                 Date of birth
               </label>
               <div className="flex items-center justify-between w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
-                <p>Select a date of birth</p>
+                <input
+                  className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
+                  type="text"
+                  id="dob"
+                  name="dob"
+                  placeholder="Select a date of birth"
+                  value={
+                    userData.dob && formatDateInNew(formatDate(userData.dob))
+                  }
+                  readOnly
+                />
                 <img
                   onClick={() => {
                     setShowCalender(true);
@@ -376,15 +383,6 @@ function CreateUser() {
                   className="w-[16px] h-[16px] cursor-pointer object-contain"
                 />
               </div>
-              {/* <input
-                className="w-full h-[49px] shadow-none border outline-none pl-2 bg-[#FAFAFA] rounded-[8px]"
-                type="text"
-                id="email"
-                name="email"
-                autoComplete="false"
-                value={userData.email}
-                onChange={handleInputs}
-              /> */}
             </div>
             <div className="flex items-center gap-3">
               <label
@@ -392,15 +390,13 @@ function CreateUser() {
                   selectedRole === "patient"
                     ? "border-[#76BC21]"
                     : "border-gray-300"
-                }`}
-              >
+                }`}>
                 <div
                   className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
                     selectedRole === "patient"
                       ? "border-[#76BC21]"
                       : "border-gray-300"
-                  }`}
-                >
+                  }`}>
                   {selectedRole === "patient" && (
                     <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
                   )}
@@ -420,15 +416,13 @@ function CreateUser() {
                   selectedRole === "provider"
                     ? "border-[#76BC21]"
                     : "border-gray-300"
-                }`}
-              >
+                }`}>
                 <div
                   className={`w-5 h-5 flex items-center justify-center rounded-full border-2 ${
                     selectedRole === "provider"
                       ? "border-[#76BC21]"
                       : "border-gray-300"
-                  }`}
-                >
+                  }`}>
                   {selectedRole === "provider" && (
                     <div className="w-3 h-3 rounded-full bg-[#76BC21]"></div>
                   )}
@@ -447,8 +441,7 @@ function CreateUser() {
             <div className="mt-[20px]">
               <label
                 htmlFor="password"
-                className="text-[14px] mb-[4px] font-[500]"
-              >
+                className="text-[14px] mb-[4px] font-[500]">
                 Password
               </label>
               <div className="flex items-center justify-between h-[49px] border bg-[#FAFAFA] px-[16px] py-[16px] rounded-[8px]">
@@ -468,8 +461,7 @@ function CreateUser() {
                 />
                 <Link
                   className="text-[#72849A80] text-[12px]"
-                  onClick={() => setShow(!show)}
-                >
+                  onClick={() => setShow(!show)}>
                   {show ? "Hide" : "Show"}
                 </Link>
               </div>
@@ -480,8 +472,7 @@ function CreateUser() {
               </Link>
               <button
                 type="submit"
-                className="  font-medium  px-[24px] py-[12px] text-white bg-[#00263E] rounded-[8px] "
-              >
+                className="  font-medium  px-[24px] py-[12px] text-white bg-[#00263E] rounded-[8px] ">
                 Save
               </button>
             </div>
@@ -489,11 +480,19 @@ function CreateUser() {
         </div>
       </div>
       {showCalender && (
-        <SingleCalender
-          handleSetDate={() => {
-            setShowCalender(false);
-          }}
-        />
+        <div className="absolute top-[19%] left-[7%]">
+          <SingleCalender
+            currentDate={userData.dob}
+            handleSetDate={(date) => {
+              setShowCalender(false);
+              console.log(date);
+              setUserData((prevState) => ({
+                ...prevState,
+                dob: date,
+              }));
+            }}
+          />
+        </div>
       )}
       {showSuccessMessage && (
         <div className="fixed  inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
@@ -516,8 +515,7 @@ function CreateUser() {
               </Link>
               <button
                 className="bg-[#00263E] h-[45px] text-white font-medium px-[24px] py-[12px] rounded-[8px]"
-                onClick={closeSuccessMessage}
-              >
+                onClick={closeSuccessMessage}>
                 Create another user
               </button>
             </div>

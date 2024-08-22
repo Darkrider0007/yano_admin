@@ -16,6 +16,7 @@ import PhoneFormDataPass from "@/components/PhoneNumberDataPass";
 import countryRev from "../assets/countryRev.json";
 import SingleCalender from "@/components/SingleCalender";
 import DatePickerComponent from "@/components/DatePickerComponent";
+import { formatDate, formatDateInNew } from "@/helpers/farmatDate";
 
 function BasicInfo() {
   const [show, setShow] = useState(false);
@@ -29,7 +30,7 @@ function BasicInfo() {
 
   const location = useLocation();
 
-  console.log("location", location);
+  // console.log("location", location);
 
   // const [userData, setUserData] = useState({
   //   firstName: "Jenny",
@@ -43,28 +44,15 @@ function BasicInfo() {
   //   type: "patient",
   // });
 
-  // console.log(userData);
+  const data1 = location.state;
 
-  const data = location.state;
-
-  console.log("data", data);
+  const [data, setData] = useState(data1);
 
   const params = useParams();
 
   // const location = useLocation();
 
   const { userID } = params;
-
-  console.log("userID", userID);
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-
-    // Format the date to YYYY-MM-DD
-    const formattedDate = date.toISOString().split("T")[0];
-
-    return formattedDate;
-  };
 
   let name, value;
   const handleInputs = (e) => {
@@ -73,7 +61,6 @@ function BasicInfo() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(userData);
 
     setIsSubmitted(true);
     setIsSave(true);
@@ -208,65 +195,39 @@ function BasicInfo() {
               className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
-            {/* <div className="flex items-center justify-between border-y-2 border-[#E7ECF2] w-full h-[49px] shadow-none border py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px]">
-              <input
-                className="w-full h-[49px] shadow-sm outline-none pl-2 bg-[#FAFAFA] border-none"
-                // className="w-full h-[49px] shadow-none border-y-2 outline-none pl-2 bg-[#FAFAFA] rounded-[8px]"
-                type="text"
-                id="dob"
-                name="dob"
-                autoComplete="false"
-                value={formatDate(data?.dateOfBirth)}
-                // onChange={handleInputs}
-                disabled
-              />
-              <img
-                src={date}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-            </div> */}
-            {/* <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
-              <input
-                className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
-                type="text"
-                id="dob"
-                name="dob"
-                autoComplete="false"
-                value={formatDate(data?.dateOfBirth)}
-                disabled
-              />
-              <img
-                src={date}
-                onClick={() => {
-                  setShowCalender(true);
-                }}
-                alt=""
-                className="w-[16px] h-[16px] object-contain"
-              />
-            </div> */}
             <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
               <input
                 className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
                 type="text"
                 id="dob"
                 name="dob"
-                value={formatDate(data?.dateOfBirth)} // Display the formatted date in the input
+                value={formatDateInNew(formatDate(data?.dateOfBirth))} // Display the formatted date in the input
                 readOnly
               />
-              <DatePickerComponent
-                dateIconSrc={date}
-                onDateChange={handleDateChange}
+              <img
+                onClick={() => {
+                  setShowCalender(true);
+                }}
+                src={date}
+                alt=""
+                className="w-[16px] h-[16px] cursor-pointer object-contain"
               />
             </div>
+            {showCalender && (
+              <div className="absolute top-[43%] left-[7%]">
+                <SingleCalender
+                  currentDate={data?.dateOfBirth}
+                  handleSetDate={(date) => {
+                    setShowCalender(false);
+                    setData((prevState) => ({
+                      ...prevState,
+                      dateOfBirth: date,
+                    }));
+                  }}
+                />
+              </div>
+            )}
           </div>
-          {showCalender && (
-            <SingleCalender
-              handleSetDate={() => {
-                setShowCalender(false);
-              }}
-            />
-          )}
           {/* <div className="flex items-center gap-3 cursor-none">
             <label
               className={`inline-flex items-center mt-3 border-2 w-[228px] h-[50px] justify-center rounded-[8px] ${

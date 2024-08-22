@@ -1,5 +1,5 @@
 import Sidebar from "@/components/Sidebar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-input-2/lib/style.css";
@@ -27,11 +27,11 @@ function EditUser() {
   const location = useLocation();
   const { userID } = useParams();
 
-  console.log("userID", userID);
+  // console.log("userID", userID);
 
   const data = location.state?.user;
 
-  console.log("data", data);
+  // console.log("data", data);
 
   // const formatDate = (dateString) => {
   //   const date = new Date(dateString);
@@ -56,12 +56,20 @@ function EditUser() {
   // const [dateOfBirth, setDateOfBirth] = useState(null);
 
   const formatDate = (date) => {
-    if (!date) return ""; // Return an empty string if no date is selected
-    return new Date(date).toLocaleDateString(); // Format the date as needed (MM/DD/YYYY)
+    if (!date) return "";
+    return new Date(date).toLocaleDateString();
   };
 
   const handleDateChange = (date) => {
     setDateOfBirth(formatDateInNew(formatDate(date))); // Update the state with the selected date
+  };
+
+  const iconRef = useRef(null);
+  const calendarRef = useRef(null);
+
+  const handleSetDate = (date) => {
+    setShowCalender(false); // Close the calendar
+    onDateChange(date); // Pass the selected date back to the parent component
   };
 
   useEffect(() => {
@@ -157,33 +165,24 @@ function EditUser() {
               className="text-[14px] text-[#00263E] mb-[4px] font-[500]">
               Date of birth
             </label>
-            {/* <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
-              <input
-                className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
-                type="text"
-                id="dob"
-                name="dob"
-                value={formatDate(dateOfBirth)} // Update this value based on selected date
-                readOnly
-              />
-              <DatePickerComponent
-                dateIconSrc={date}
-                onDateChange={handleDateChange}
-              />
-            </div> */}
             <div className="flex items-center justify-between w-full h-[49px] shadow-none py-[14px] px-[16px] bg-[#FAFAFA] rounded-[8px] border-2 border-[#E7ECF2]">
               <input
                 className="w-full h-full outline-none pl-2 bg-[#FAFAFA] border-none rounded-[8px]"
                 type="text"
                 id="dob"
                 name="dob"
-                value={dateOfBirth} // Display the formatted date in the input
+                value={dateOfBirth}
                 readOnly
               />
-              <DatePickerComponent
-                dateIconSrc={date}
-                onDateChange={handleDateChange} // Pass the function to update the date
-              />
+              <div className="inline-block">
+                <img
+                  ref={iconRef}
+                  src={date}
+                  alt="Select Date"
+                  onClick={() => setShowCalender(!showCalender)}
+                  className="w-[16px] h-[16px] object-contain cursor-pointer"
+                />
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 cursor-none">
@@ -242,13 +241,15 @@ function EditUser() {
           </div>
         </div>
         {showCalender && (
-          <>
+          <div className="absolute top-[19%] left-[7%]">
             <SingleCalender
-              handleSetDate={() => {
+              currentDate={dateOfBirth}
+              handleSetDate={(date) => {
                 setShowCalender(false);
+                setDateOfBirth(formatDateInNew(formatDate(date)));
               }}
             />
-          </>
+          </div>
         )}
         <div className="w-[626px] my-[20px] p-[20px] rounded-[8px] bg-white shadow">
           <p className="text-[20px] text-darkblue font-bold pb-[32px]">

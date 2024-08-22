@@ -18,6 +18,7 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   customYear = 10,
+  selectedDateFromCalender,
   onDayClick,
   ...props
 }) {
@@ -61,16 +62,33 @@ function Calendar({
     setMonthToDisplay(new Date(selectedYear, selectedMonth));
   }, [selectedMonth, selectedYear]);
 
-  const [selectedDay, setSelectedDay] = React.useState(null);
+  const [selectedDay, setSelectedDay] = React.useState(
+    selectedDateFromCalender || null
+  );
+
+  console.log("Selected Day:", selectedDay);
+  console.log("Selected Date from Calendar:", selectedDateFromCalender);
+
+  const [onClickButton, setOnClickButton] = React.useState(false);
 
   const handleDayClickInternal = (day, { selected }) => {
     const newSelectedDay = selected ? undefined : day;
     setSelectedDay(newSelectedDay);
+    setOnClickButton(true);
 
     if (onDayClick) {
       onDayClick(newSelectedDay);
     }
   };
+
+  React.useEffect(() => {
+    if (
+      selectedDateFromCalender instanceof Date &&
+      !isNaN(selectedDateFromCalender)
+    ) {
+      setSelectedDay(selectedDateFromCalender);
+    }
+  }, [selectedDateFromCalender]);
 
   return (
     <div className="px-4 rounded-md bg-white w-[300px] text-darkblue">
@@ -113,7 +131,7 @@ function Calendar({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white text-darkblue">
-            <ScrollArea className="h-80">
+            <ScrollArea className="h-40">
               {years.map((year) => (
                 <DropdownMenuItem
                   key={year}
@@ -129,11 +147,14 @@ function Calendar({
         showOutsideDays={showOutsideDays}
         onDayClick={handleDayClickInternal}
         selected={selectedDay}
-        className={cn("px-3", className)}
+        className={cn("pr-2", className)}
         classNames={{
-          day_selected:
-            "bg-[#00263E] text-white rounded-full hover:bg-[#00263E] focus:bg-[#00263E]",
-          day_today: "bg-gray-300 text-darkblue rounded-full",
+          day_selected: "bg-darkblue text-white rounded-full ",
+          day_today: `${
+            onClickButton
+              ? "bg-gray-200 text-darkblue"
+              : "bg-darkblue text-white"
+          } rounded-full`,
           months:
             "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
           month: "space-y-4",
@@ -141,7 +162,9 @@ function Calendar({
           nav: "space-x-1 flex items-center",
           nav_button: cn(
             buttonVariants({ variant: "ghost" }),
-            "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-700 rounded-full"
+            `h-7 w-7  p-0 ${
+              onClickButton ? " " : "bg-transparent opacity-50"
+            }  text-gray-700 rounded-full`
           ),
           nav_button_previous: "absolute left-1",
           nav_button_next: "absolute right-1",
@@ -149,14 +172,14 @@ function Calendar({
           head_row: "flex justify-between",
           head_cell: "text-darkblue w-9 text-[13px] font-semibold",
           row: "flex justify-between mt-2",
-          cell: "h-9 w-9 text-center text-sm rounded-full p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-primary/20 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          cell: "h-10 w-10 text-center text-sm rounded-full p-0 relative [&:has([aria-selected].day-range-end)]:rounded-full [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-primary/20 first:[&:has([aria-selected])]:rounded-full last:[&:has([aria-selected])]:rounded-full focus-within:relative focus-within:z-20",
           day: cn(
             buttonVariants({ variant: "ghost" }),
-            "h-9 w-9 p-0 font-normal text-darkblue aria-selected:opacity-100"
+            "h-10 w-10 p-0 font-normal rounded-full text-darkblue aria-selected:opacity-100"
           ),
           day_range_end: "day-range-end",
           day_outside:
-            "day-outside text-gray-400 opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+            "day-outside text-gray-400  aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
           day_disabled: "text-muted-foreground opacity-50",
           day_range_middle:
             "aria-selected:bg-accent aria-selected:text-lightgray",
