@@ -39,16 +39,24 @@ function Calendar({
     "December",
   ];
 
+  const initialDate = selectedDateFromCalender
+    ? new Date(selectedDateFromCalender)
+    : new Date();
+
   const [selectedMonth, setSelectedMonth] = React.useState(
-    new Date().getMonth()
+    initialDate.getMonth()
   );
-  const [selectedYear, setSelectedYear] = React.useState(currentYear);
+  const [selectedYear, setSelectedYear] = React.useState(
+    initialDate.getFullYear()
+  );
   const [monthToDisplay, setMonthToDisplay] = React.useState(
-    new Date(currentYear, selectedMonth)
+    new Date(selectedYear, selectedMonth)
   );
 
   const [isMonthDropdownOpen, setIsMonthDropdownOpen] = React.useState(false);
   const [isYearDropdownOpen, setIsYearDropdownOpen] = React.useState(false);
+  const [selectedDay, setSelectedDay] = React.useState(initialDate || null);
+  const [onClickButton, setOnClickButton] = React.useState(false);
 
   const handleMonthChange = (monthIndex) => {
     setSelectedMonth(monthIndex);
@@ -61,17 +69,6 @@ function Calendar({
   React.useEffect(() => {
     setMonthToDisplay(new Date(selectedYear, selectedMonth));
   }, [selectedMonth, selectedYear]);
-
-  console.log(selectedDateFromCalender);
-  console.log(new Date(selectedDateFromCalender));
-  const [selectedDay, setSelectedDay] = React.useState(
-    new Date(selectedDateFromCalender) || null
-  );
-
-  // console.log("Selected Day:", selectedDay);
-  // console.log("Selected Date from Calendar:", selectedDateFromCalender);
-
-  const [onClickButton, setOnClickButton] = React.useState(false);
 
   const handleDayClickInternal = (day, { selected }) => {
     const newSelectedDay = selected ? undefined : day;
@@ -89,6 +86,8 @@ function Calendar({
       !isNaN(selectedDateFromCalender)
     ) {
       setSelectedDay(selectedDateFromCalender);
+      setSelectedMonth(selectedDateFromCalender.getMonth());
+      setSelectedYear(selectedDateFromCalender.getFullYear());
     }
   }, [selectedDateFromCalender]);
 
@@ -155,7 +154,7 @@ function Calendar({
         classNames={{
           day_selected: "bg-darkblue text-white rounded-full ",
           day_today: `${
-            onClickButton
+            onClickButton && selectedDay
               ? "bg-gray-200 text-darkblue"
               : "bg-darkblue text-white"
           } rounded-full`,
