@@ -12,6 +12,7 @@ import countryRev from "../assets/countryRev.json";
 import SingleCalender from "@/components/SingleCalender";
 import { Calendar } from "@/components/ui/calendar";
 import DatePickerComponent from "@/components/DatePickerComponent";
+import { formatDateInNew } from "@/helpers/farmatDate";
 
 function EditUser() {
   const [show, setShow] = useState(false);
@@ -60,7 +61,7 @@ function EditUser() {
   };
 
   const handleDateChange = (date) => {
-    setDateOfBirth(date); // Update the state with the selected date
+    setDateOfBirth(formatDateInNew(formatDate(date))); // Update the state with the selected date
   };
 
   useEffect(() => {
@@ -176,7 +177,7 @@ function EditUser() {
                 type="text"
                 id="dob"
                 name="dob"
-                value={formatDate(dateOfBirth)} // Display the formatted date in the input
+                value={dateOfBirth} // Display the formatted date in the input
                 readOnly
               />
               <DatePickerComponent
