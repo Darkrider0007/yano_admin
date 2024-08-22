@@ -12,7 +12,9 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["@radix-ui/react-scroll-area"],
+      // Remove `@radix-ui/react-scroll-area` from the external array
+      // to allow Vite to bundle it correctly
+      external: [],
     },
   },
 });
