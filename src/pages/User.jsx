@@ -375,6 +375,18 @@ export default function User() {
       setFirstDate(firstDate);
       setSecondDate(secondDate);
       const formattedRange = `${firstDate.toLocaleDateString()} - ${secondDate.toLocaleDateString()}`;
+      if (firstDate.getFullYear() <= secondDate.getFullYear()) {
+        const userData = fixedData.filter((user) => {
+          const userDate = new Date(user.createdAt);
+          return userDate >= firstDate && userDate <= secondDate;
+        });
+
+        if (userData.length === 0) {
+          setFilteredData(fixedData);
+        } else {
+          setFilteredData(userData);
+        }
+      }
       setDateRange(formattedRange);
     }
     setShowCalender(false);
