@@ -523,7 +523,7 @@ export default function User() {
                               />
                             </Link>
                             {showCalender && (
-                              <div className="bg-[#fafafa] absolute right-[8.5%] bottom-10 z-50">
+                              <div className="bg-[#fafafa] absolute right-32 top-64 z-50">
                                 <CalenderTwoSide
                                   handleSetDate={handleSetDate}
                                 />
