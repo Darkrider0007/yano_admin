@@ -245,7 +245,7 @@ function EditUser() {
         {showCalender && (
           <div className="absolute top-32 left-[7%]">
             <SingleCalender
-              currentDate={dateOfBirth}
+              currentDate={data?.dateOfBirth}
               handleSetDate={(date) => {
                 setShowCalender(false);
                 setDateOfBirth(formatDateInNew(formatDate(date)));
